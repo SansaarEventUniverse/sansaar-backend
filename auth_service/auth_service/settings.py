@@ -222,5 +222,8 @@ REST_FRAMEWORK = {
 CORS_ALLOW_ALL_ORIGINS = DEBUG
 CORS_ALLOWED_ORIGINS = [] if DEBUG else config('CORS_ALLOWED_ORIGINS', cast=Csv())
 
+# Custom User Model
+AUTH_USER_MODEL = 'domain.User'
+
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
