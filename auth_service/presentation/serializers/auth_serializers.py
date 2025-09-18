@@ -1,4 +1,5 @@
 from rest_framework import serializers
+
 from domain.user_model import User
 
 
@@ -9,7 +10,7 @@ class RegisterUserSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True, min_length=8)
     confirm_password = serializers.CharField(write_only=True)
     agree_terms = serializers.BooleanField()
-    
+
     def validate(self, data):
         if data['password'] != data['confirm_password']:
             raise serializers.ValidationError('Passwords do not match')

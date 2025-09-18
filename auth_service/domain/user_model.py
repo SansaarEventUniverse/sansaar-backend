@@ -12,7 +12,7 @@ class UserManager(BaseUserManager):
         user.set_password(password)
         user.save(using=self._db)
         return user
-    
+
     def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
@@ -28,26 +28,26 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
-    
+
     objects = UserManager()
-    
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
-    
+
     class Meta:
         db_table = 'users'
-    
+
     def __str__(self):
         return self.email
-    
+
     def verify_email(self):
         self.is_email_verified = True
         self.save(update_fields=['is_email_verified'])
-    
+
     def activate(self):
         self.is_active = True
         self.save(update_fields=['is_active'])
-    
+
     def deactivate(self):
         self.is_active = False
         self.save(update_fields=['is_active'])

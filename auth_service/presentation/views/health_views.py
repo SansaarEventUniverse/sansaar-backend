@@ -1,14 +1,15 @@
+import sentry_sdk
+from celery import current_app
+from django.core.cache import cache
+from django.db import connection
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from django.db import connection
-from django.core.cache import cache
-from celery import current_app
-import sentry_sdk
+
 
 @api_view(['GET'])
 def health_check(request):
     status = {'status': 'healthy', 'services': {}}
-    
+
     # Check PostgreSQL
     try:
         connection.ensure_connection()
@@ -16,7 +17,7 @@ def health_check(request):
     except Exception as e:
         status['services']['postgresql'] = f'error: {str(e)}'
         status['status'] = 'unhealthy'
-    
+
     # Check Redis
     try:
         cache.set('health_check', 'ok', 10)
@@ -28,7 +29,7 @@ def health_check(request):
     except Exception as e:
         status['services']['redis'] = f'error: {str(e)}'
         status['status'] = 'unhealthy'
-    
+
     # Check Celery
     try:
         inspect = current_app.control.inspect()
@@ -38,7 +39,7 @@ def health_check(request):
             status['services']['celery'] = 'no workers available'
     except Exception as e:
         status['services']['celery'] = f'error: {str(e)}'
-    
+
     # Check Sentry
     try:
         client = sentry_sdk.Hub.current.client
@@ -48,5 +49,5 @@ def health_check(request):
             status['services']['sentry'] = 'not configured'
     except Exception as e:
         status['services']['sentry'] = f'error: {str(e)}'
-    
+
     return Response(status)

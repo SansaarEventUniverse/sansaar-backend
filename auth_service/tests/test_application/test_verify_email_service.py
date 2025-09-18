@@ -1,15 +1,20 @@
 from datetime import timedelta
 
 import pytest
+from django.core.exceptions import ValidationError
 from django.utils import timezone
 
+from application.verify_email_service import VerifyEmailService
 from domain.email_verification_token_model import EmailVerificationToken
 from domain.user_model import User
 
 
 @pytest.mark.django_db
-class TestEmailVerificationToken:
-    def test_create_token(self):
+class TestVerifyEmailService:
+    def setup_method(self):
+        self.service = VerifyEmailService()
+
+    def test_verify_email_success(self):
         user = User.objects.create_user(
             email='test@example.com',
             password='Test@1234',
@@ -18,11 +23,17 @@ class TestEmailVerificationToken:
         )
         token = EmailVerificationToken.objects.create(user=user)
 
-        assert token.user == user
-        assert len(token.token) == 64
-        assert token.expires_at > timezone.now()
+        result = self.service.verify(token.token)
 
-    def test_token_expires_in_24_hours(self):
+        assert result is True
+        user.refresh_from_db()
+        assert user.is_email_verified is True
+
+    def test_verify_email_invalid_token(self):
+        with pytest.raises(ValidationError, match='Invalid or expired token'):
+            self.service.verify('invalid-token')
+
+    def test_verify_email_expired_token(self):
         user = User.objects.create_user(
             email='test@example.com',
             password='Test@1234',
@@ -30,32 +41,21 @@ class TestEmailVerificationToken:
             last_name='User'
         )
         token = EmailVerificationToken.objects.create(user=user)
-
-        expected_expiry = timezone.now() + timedelta(hours=24)
-        assert abs((token.expires_at - expected_expiry).total_seconds()) < 5
-
-    def test_is_expired_method(self):
-        user = User.objects.create_user(
-            email='test@example.com',
-            password='Test@1234',
-            first_name='Test',
-            last_name='User'
-        )
-        token = EmailVerificationToken.objects.create(user=user)
-
-        assert token.is_expired() is False
-
         token.expires_at = timezone.now() - timedelta(hours=1)
         token.save()
-        assert token.is_expired() is True
 
-    def test_token_str_representation(self):
+        with pytest.raises(ValidationError, match='Invalid or expired token'):
+            self.service.verify(token.token)
+
+    def test_verify_email_already_verified(self):
         user = User.objects.create_user(
             email='test@example.com',
             password='Test@1234',
             first_name='Test',
             last_name='User'
         )
+        user.verify_email()
         token = EmailVerificationToken.objects.create(user=user)
 
-        assert str(token) == f"Token for {user.email}"
+        with pytest.raises(ValidationError, match='Email already verified'):
+            self.service.verify(token.token)

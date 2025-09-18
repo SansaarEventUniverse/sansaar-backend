@@ -1,6 +1,7 @@
+
 import pytest
-from unittest.mock import Mock, patch
 from django.core.exceptions import ValidationError
+
 from application.register_user_service import RegisterUserService
 from domain.user_model import User
 
@@ -9,7 +10,7 @@ from domain.user_model import User
 class TestRegisterUserService:
     def setup_method(self):
         self.service = RegisterUserService()
-    
+
     def test_register_user_success(self):
         data = {
             'first_name': 'John',
@@ -24,7 +25,7 @@ class TestRegisterUserService:
         assert user.first_name == 'John'
         assert user.last_name == 'Doe'
         assert user.is_email_verified is False
-    
+
     def test_register_user_password_mismatch(self):
         data = {
             'first_name': 'John',
@@ -36,7 +37,7 @@ class TestRegisterUserService:
         }
         with pytest.raises(ValidationError, match='Passwords do not match'):
             self.service.register(data)
-    
+
     def test_register_user_weak_password(self):
         data = {
             'first_name': 'John',
@@ -48,7 +49,7 @@ class TestRegisterUserService:
         }
         with pytest.raises(ValidationError, match='Password must be at least 8 characters'):
             self.service.register(data)
-    
+
     def test_register_user_password_no_uppercase(self):
         data = {
             'first_name': 'John',
@@ -60,7 +61,7 @@ class TestRegisterUserService:
         }
         with pytest.raises(ValidationError, match='Password must contain at least one uppercase letter'):
             self.service.register(data)
-    
+
     def test_register_user_password_no_lowercase(self):
         data = {
             'first_name': 'John',
@@ -72,7 +73,7 @@ class TestRegisterUserService:
         }
         with pytest.raises(ValidationError, match='Password must contain at least one lowercase letter'):
             self.service.register(data)
-    
+
     def test_register_user_password_no_number(self):
         data = {
             'first_name': 'John',
@@ -84,7 +85,7 @@ class TestRegisterUserService:
         }
         with pytest.raises(ValidationError, match='Password must contain at least one number'):
             self.service.register(data)
-    
+
     def test_register_user_password_no_special_char(self):
         data = {
             'first_name': 'John',
@@ -96,7 +97,7 @@ class TestRegisterUserService:
         }
         with pytest.raises(ValidationError, match='Password must contain at least one special character'):
             self.service.register(data)
-    
+
     def test_register_user_disposable_email(self):
         data = {
             'first_name': 'John',
@@ -108,7 +109,7 @@ class TestRegisterUserService:
         }
         with pytest.raises(ValidationError, match='Disposable email addresses are not allowed'):
             self.service.register(data)
-    
+
     def test_register_user_duplicate_email(self):
         User.objects.create_user(
             email='john@example.com',
@@ -126,7 +127,7 @@ class TestRegisterUserService:
         }
         with pytest.raises(ValidationError, match='Email already registered'):
             self.service.register(data)
-    
+
     def test_register_user_terms_not_agreed(self):
         data = {
             'first_name': 'John',
