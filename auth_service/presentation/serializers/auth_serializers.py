@@ -17,6 +17,11 @@ class RegisterUserSerializer(serializers.Serializer):
         return data
 
 
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
+
+
 class ResendVerificationSerializer(serializers.Serializer):
     email = serializers.EmailField()
 

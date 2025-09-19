@@ -4,10 +4,12 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
+from application.login_service import LoginService
 from application.register_user_service import RegisterUserService
 from application.resend_verification_service import ResendVerificationService
 from application.verify_email_service import VerifyEmailService
 from presentation.serializers.auth_serializers import (
+    LoginSerializer,
     RegisterUserSerializer,
     ResendVerificationSerializer,
     UserSerializer,
@@ -34,6 +36,26 @@ def register(request):
         return Response({'non_field_errors': [str(e.message)]}, status=status.HTTP_400_BAD_REQUEST)
     except Exception:
         return Response({'error': 'Registration failed'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def login(request):
+    serializer = LoginSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        service = LoginService()
+        result = service.login(
+            serializer.validated_data['email'],
+            serializer.validated_data['password']
+        )
+        return Response(result, status=status.HTTP_200_OK)
+    except ValidationError as e:
+        return Response({'error': str(e.message)}, status=status.HTTP_400_BAD_REQUEST)
+    except Exception:
+        return Response({'error': 'Login failed'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(['GET'])
