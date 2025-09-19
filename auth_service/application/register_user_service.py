@@ -3,7 +3,10 @@ from pathlib import Path
 
 from django.core.exceptions import ValidationError
 
+from application.tasks import delete_unverified_user
+from domain.email_verification_token_model import EmailVerificationToken
 from domain.user_model import User
+from infrastructure.services.email_service import EmailService
 
 
 class RegisterUserService:
@@ -26,6 +29,19 @@ class RegisterUserService:
             first_name=data['first_name'],
             last_name=data['last_name']
         )
+
+        # Create verification token and send email
+        token = EmailVerificationToken.objects.create(user=user)
+        email_service = EmailService()
+        email_service.send_verification_email(
+            to_email=user.email,
+            verification_token=token.token,
+            first_name=user.first_name
+        )
+
+        # Schedule deletion of unverified user after 10 minutes
+        delete_unverified_user.apply_async(args=[user.id], countdown=600)
+
         return user
 
     def _validate_terms(self, agree_terms):

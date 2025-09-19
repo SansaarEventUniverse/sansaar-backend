@@ -228,6 +228,9 @@ REST_FRAMEWORK = {
 CORS_ALLOW_ALL_ORIGINS = DEBUG
 CORS_ALLOWED_ORIGINS = [] if DEBUG else config('CORS_ALLOWED_ORIGINS', cast=Csv())
 
+# Frontend URL
+FRONTEND_URL = config('FRONTEND_URL')
+
 # Custom User Model
 AUTH_USER_MODEL = 'domain.User'
 

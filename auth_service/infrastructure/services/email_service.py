@@ -14,7 +14,7 @@ class EmailService:
 
     def send_verification_email(self, to_email, verification_token, first_name):
         try:
-            verification_url = f"http://{settings.ALLOWED_HOSTS[0]}/verify-email?token={verification_token}"
+            verification_url = f"{settings.FRONTEND_URL}/verify-email?token={verification_token}"
 
             message = Mail(
                 from_email=self.from_email,
