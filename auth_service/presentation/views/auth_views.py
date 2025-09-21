@@ -1,3 +1,4 @@
+from allauth.socialaccount.models import SocialAccount
 from django.core.exceptions import ValidationError
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -8,6 +9,7 @@ from application.login_service import LoginService
 from application.register_user_service import RegisterUserService
 from application.resend_verification_service import ResendVerificationService
 from application.verify_email_service import VerifyEmailService
+from infrastructure.oauth.google_adapter import GoogleOAuthAdapter
 from presentation.serializers.auth_serializers import (
     LoginSerializer,
     RegisterUserSerializer,
@@ -56,6 +58,37 @@ def login(request):
         return Response({'error': str(e.message)}, status=status.HTTP_400_BAD_REQUEST)
     except Exception:
         return Response({'error': 'Login failed'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def google_callback(request):
+    try:
+        # Get user from social account
+        uid = request.GET.get('uid')
+        if not uid:
+            return Response({'error': 'Missing uid parameter'}, status=status.HTTP_400_BAD_REQUEST)
+
+        social_account = SocialAccount.objects.get(provider='google', uid=uid)
+        user = social_account.user
+
+        # Generate JWT tokens
+        adapter = GoogleOAuthAdapter()
+        tokens = adapter.generate_tokens(user)
+
+        return Response({
+            **tokens,
+            'user': {
+                'id': user.id,
+                'email': user.email,
+                'first_name': user.first_name,
+                'last_name': user.last_name
+            }
+        }, status=status.HTTP_200_OK)
+    except SocialAccount.DoesNotExist:
+        return Response({'error': 'Social account not found'}, status=status.HTTP_404_NOT_FOUND)
+    except Exception:
+        return Response({'error': 'OAuth callback failed'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(['GET'])
