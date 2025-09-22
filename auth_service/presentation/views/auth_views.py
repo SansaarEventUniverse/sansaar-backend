@@ -7,13 +7,17 @@ from rest_framework.response import Response
 
 from application.login_service import LoginService
 from application.register_user_service import RegisterUserService
+from application.request_password_reset_service import RequestPasswordResetService
 from application.resend_verification_service import ResendVerificationService
+from application.reset_password_service import ResetPasswordService
 from application.verify_email_service import VerifyEmailService
 from infrastructure.oauth.google_adapter import GoogleOAuthAdapter
 from presentation.serializers.auth_serializers import (
     LoginSerializer,
     RegisterUserSerializer,
+    RequestPasswordResetSerializer,
     ResendVerificationSerializer,
+    ResetPasswordSerializer,
     UserSerializer,
 )
 
@@ -58,6 +62,41 @@ def login(request):
         return Response({'error': str(e.message)}, status=status.HTTP_400_BAD_REQUEST)
     except Exception:
         return Response({'error': 'Login failed'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def request_password_reset(request):
+    serializer = RequestPasswordResetSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        service = RequestPasswordResetService()
+        service.request_reset(serializer.validated_data['email'])
+        return Response({'message': 'Password reset email sent'}, status=status.HTTP_200_OK)
+    except Exception:
+        return Response({'error': 'Failed to send password reset email'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def reset_password(request):
+    serializer = ResetPasswordSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        service = ResetPasswordService()
+        service.reset_password(
+            serializer.validated_data['token'],
+            serializer.validated_data['new_password']
+        )
+        return Response({'message': 'Password reset successfully'}, status=status.HTTP_200_OK)
+    except ValidationError as e:
+        return Response({'error': str(e.message)}, status=status.HTTP_400_BAD_REQUEST)
+    except Exception:
+        return Response({'error': 'Password reset failed'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(['GET'])
