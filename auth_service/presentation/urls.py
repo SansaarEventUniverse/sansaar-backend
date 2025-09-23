@@ -1,6 +1,7 @@
 from django.urls import path
 
 from .views.auth_views import (
+    change_password,
     google_callback,
     login,
     register,
@@ -19,5 +20,6 @@ urlpatterns = [
     path('resend-verification/', resend_verification, name='resend_verification'),
     path('password-reset/request/', request_password_reset, name='request_password_reset'),
     path('password-reset/confirm/', reset_password, name='reset_password'),
+    path('password-change/', change_password, name='change_password'),
     path('google/callback/', google_callback, name='google_callback'),
 ]

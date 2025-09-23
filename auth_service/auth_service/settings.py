@@ -230,7 +230,9 @@ SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
 
 # REST Framework Configuration
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'infrastructure.authentication.jwt_authentication.JWTAuthentication',
+    ],
     'DEFAULT_PERMISSION_CLASSES': [],
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
