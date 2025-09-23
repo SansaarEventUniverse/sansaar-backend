@@ -2,9 +2,10 @@ from allauth.socialaccount.models import SocialAccount
 from django.core.exceptions import ValidationError
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
+from application.change_password_service import ChangePasswordService
 from application.login_service import LoginService
 from application.register_user_service import RegisterUserService
 from application.request_password_reset_service import RequestPasswordResetService
@@ -13,6 +14,7 @@ from application.reset_password_service import ResetPasswordService
 from application.verify_email_service import VerifyEmailService
 from infrastructure.oauth.google_adapter import GoogleOAuthAdapter
 from presentation.serializers.auth_serializers import (
+    ChangePasswordSerializer,
     LoginSerializer,
     RegisterUserSerializer,
     RequestPasswordResetSerializer,
@@ -158,4 +160,25 @@ def resend_verification(request):
         return Response({'error': str(e.message)}, status=status.HTTP_400_BAD_REQUEST)
     except Exception:
         return Response({'error': 'Failed to send verification email'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def change_password(request):
+    serializer = ChangePasswordSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        service = ChangePasswordService()
+        service.change_password(
+            user=request.user,
+            current_password=serializer.validated_data['current_password'],
+            new_password=serializer.validated_data['new_password']
+        )
+        return Response({'message': 'Password changed successfully'}, status=status.HTTP_200_OK)
+    except ValidationError as e:
+        return Response({'error': str(e.message)}, status=status.HTTP_400_BAD_REQUEST)
+    except Exception:
+        return Response({'error': 'Password change failed'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
