@@ -31,3 +31,23 @@ class EmailService:
         except Exception as e:
             logger.error(f"Failed to send verification email: {str(e)}")
             return False
+
+    def send_password_reset_email(self, to_email, reset_token, first_name):
+        try:
+            reset_url = f"{settings.FRONTEND_URL}/reset-password?token={reset_token}"
+
+            message = Mail(
+                from_email=self.from_email,
+                to_emails=to_email
+            )
+            message.template_id = settings.SENDGRID_PASSWORD_RESET_TEMPLATE_ID
+            message.dynamic_template_data = {
+                'first_name': first_name,
+                'reset_url': reset_url
+            }
+
+            response = self.client.send(message)
+            return response.status_code == 202
+        except Exception as e:
+            logger.error(f"Failed to send password reset email: {str(e)}")
+            return False
