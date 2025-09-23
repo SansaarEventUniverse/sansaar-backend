@@ -17,7 +17,7 @@ class JWTAuthentication(BaseAuthentication):
                 return None
 
             jwt_service = JWTService()
-            payload = jwt_service.verify_access_token(token)
+            payload = jwt_service.decode_token(token)
 
             user = User.objects.get(id=payload['user_id'])
             return (user, None)
