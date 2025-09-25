@@ -11,18 +11,13 @@ class TestGetProfileService:
         self.service = GetProfileService()
 
     def test_get_profile_success(self):
-        UserProfile.objects.create(
-            user_id='123',
-            email='test@example.com',
-            first_name='John',
-            last_name='Doe'
-        )
+        UserProfile.objects.create(user_id="123", email="test@example.com", first_name="John", last_name="Doe")
 
-        result = self.service.get_profile('123')
+        result = self.service.get_profile("123")
 
-        assert result.user_id == '123'
-        assert result.email == 'test@example.com'
+        assert result.user_id == "123"
+        assert result.email == "test@example.com"
 
     def test_get_profile_not_found(self):
-        with pytest.raises(ValidationError, match='Profile not found'):
-            self.service.get_profile('nonexistent')
+        with pytest.raises(ValidationError, match="Profile not found"):
+            self.service.get_profile("nonexistent")

@@ -8,7 +8,7 @@ class UpdateProfileService:
         try:
             profile = UserProfile.objects.get(user_id=user_id)
         except UserProfile.DoesNotExist:
-            raise ValidationError('Profile not found')
+            raise ValidationError("Profile not found")
 
         profile.update_info(first_name=first_name, last_name=last_name, bio=bio)
         return profile
