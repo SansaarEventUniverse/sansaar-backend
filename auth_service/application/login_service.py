@@ -1,18 +1,41 @@
 from django.core.exceptions import ValidationError
 
+from application.log_audit_event_service import LogAuditEventService
+from domain.audit_log_model import AuditEventType
 from domain.refresh_token_model import RefreshToken
 from domain.user_model import User
 from infrastructure.services.jwt_service import JWTService
 
 
 class LoginService:
-    def login(self, email, password):
+    def __init__(self):
+        self.audit_service = LogAuditEventService()
+
+    def login(self, email, password, ip_address=None, user_agent=None):
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
+            # Log failed login
+            self.audit_service.log_event(
+                event_type=AuditEventType.LOGIN,
+                user_id=email,
+                ip_address=ip_address,
+                user_agent=user_agent,
+                success=False,
+                metadata={'reason': 'User not found'}
+            )
             raise ValidationError('Invalid email or password')
 
         if not user.check_password(password):
+            # Log failed login
+            self.audit_service.log_event(
+                event_type=AuditEventType.LOGIN,
+                user_id=str(user.id),
+                ip_address=ip_address,
+                user_agent=user_agent,
+                success=False,
+                metadata={'reason': 'Invalid password'}
+            )
             raise ValidationError('Invalid email or password')
 
         if not user.is_email_verified:
@@ -28,6 +51,15 @@ class LoginService:
 
         # Store refresh token in database
         RefreshToken.objects.create(user=user)
+
+        # Log successful login
+        self.audit_service.log_event(
+            event_type=AuditEventType.LOGIN,
+            user_id=str(user.id),
+            ip_address=ip_address,
+            user_agent=user_agent,
+            metadata={'email': user.email}
+        )
 
         return {
             'access_token': access_token,

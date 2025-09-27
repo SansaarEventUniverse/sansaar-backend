@@ -3,7 +3,9 @@ from pathlib import Path
 
 from django.core.exceptions import ValidationError
 
+from application.log_audit_event_service import LogAuditEventService
 from application.tasks import delete_unverified_user
+from domain.audit_log_model import AuditEventType
 from domain.email_verification_token_model import EmailVerificationToken
 from domain.user_model import User
 from infrastructure.services.email_service import EmailService
@@ -12,13 +14,14 @@ from infrastructure.services.email_service import EmailService
 class RegisterUserService:
     def __init__(self):
         self._load_disposable_domains()
+        self.audit_service = LogAuditEventService()
 
     def _load_disposable_domains(self):
         file_path = Path(__file__).parent / 'data' / 'disposable_email_domains.txt'
         with open(file_path) as f:
             self.disposable_domains = {line.strip() for line in f if line.strip()}
 
-    def register(self, data):
+    def register(self, data, ip_address=None, user_agent=None):
         self._validate_terms(data.get('agree_terms'))
         self._validate_passwords(data.get('password'), data.get('confirm_password'))
         self._validate_email(data.get('email'))
@@ -28,6 +31,15 @@ class RegisterUserService:
             password=data['password'],
             first_name=data['first_name'],
             last_name=data['last_name']
+        )
+
+        # Log audit event
+        self.audit_service.log_event(
+            event_type=AuditEventType.REGISTRATION,
+            user_id=str(user.id),
+            ip_address=ip_address,
+            user_agent=user_agent,
+            metadata={'email': user.email}
         )
 
         # Create verification token and send email
