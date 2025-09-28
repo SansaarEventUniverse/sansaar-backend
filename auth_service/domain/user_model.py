@@ -51,3 +51,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     def deactivate(self):
         self.is_active = False
         self.save(update_fields=['is_active'])
+
+    def has_mfa_enabled(self):
+        return hasattr(self, 'mfa_secret') and self.mfa_secret.is_verified
