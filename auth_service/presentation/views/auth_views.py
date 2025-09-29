@@ -59,7 +59,8 @@ def login(request):
         service = LoginService()
         result = service.login(
             serializer.validated_data['email'],
-            serializer.validated_data['password']
+            serializer.validated_data['password'],
+            mfa_code=serializer.validated_data.get('mfa_code')
         )
         return Response(result, status=status.HTTP_200_OK)
     except ValidationError as e:

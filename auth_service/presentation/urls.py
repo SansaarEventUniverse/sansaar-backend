@@ -12,6 +12,7 @@ from .views.auth_views import (
     verify_email,
 )
 from .views.health_views import health_check
+from .views.mfa_views import disable_mfa, enable_mfa, verify_mfa
 
 urlpatterns = [
     path('health/', health_check, name='health_check'),
@@ -23,5 +24,8 @@ urlpatterns = [
     path('password-reset/request/', request_password_reset, name='request_password_reset'),
     path('password-reset/confirm/', reset_password, name='reset_password'),
     path('password-change/', change_password, name='change_password'),
+    path('mfa/enable/', enable_mfa, name='enable_mfa'),
+    path('mfa/verify/', verify_mfa, name='verify_mfa'),
+    path('mfa/disable/', disable_mfa, name='disable_mfa'),
     path('google/callback/', google_callback, name='google_callback'),
 ]

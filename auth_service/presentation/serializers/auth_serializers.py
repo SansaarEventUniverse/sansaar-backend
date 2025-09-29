@@ -20,6 +20,7 @@ class RegisterUserSerializer(serializers.Serializer):
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
+    mfa_code = serializers.CharField(required=False, min_length=6, max_length=6)
 
 
 class RequestPasswordResetSerializer(serializers.Serializer):
@@ -42,6 +43,10 @@ class ChangePasswordSerializer(serializers.Serializer):
 
 class LogoutSerializer(serializers.Serializer):
     refresh_token = serializers.CharField()
+
+
+class VerifyMFASerializer(serializers.Serializer):
+    code = serializers.CharField(min_length=6, max_length=6)
 
 
 class UserSerializer(serializers.ModelSerializer):
