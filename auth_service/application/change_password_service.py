@@ -11,10 +11,17 @@ class ChangePasswordService:
         if current_password == new_password:
             raise ValidationError('New password must be different from current password')
 
+        # Check password history
+        if user.has_used_password(new_password):
+            raise ValidationError('Password was used recently. Please choose a different password')
+
         self._validate_password(new_password)
 
+        # Save old password to history
+        old_password_hash = user.password
         user.set_password(new_password)
         user.save()
+        user.add_password_to_history(old_password_hash)
 
         return True
 

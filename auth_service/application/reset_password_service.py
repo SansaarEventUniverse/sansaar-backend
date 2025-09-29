@@ -15,13 +15,20 @@ class ResetPasswordService:
         if token.is_expired():
             raise ValidationError('Invalid or expired token')
 
+        user = token.user
+
+        # Check password history
+        if user.has_used_password(new_password):
+            raise ValidationError('Password was used recently. Please choose a different password')
+
         # Validate password
         self._validate_password(new_password)
 
         # Reset password
-        user = token.user
+        old_password_hash = user.password
         user.set_password(new_password)
         user.save()
+        user.add_password_to_history(old_password_hash)
 
         # Delete token
         token.delete()
