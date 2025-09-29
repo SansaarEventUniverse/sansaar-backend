@@ -55,18 +55,36 @@ def login(request):
     if not serializer.is_valid():
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    try:
-        service = LoginService()
-        result = service.login(
-            serializer.validated_data['email'],
-            serializer.validated_data['password'],
-            mfa_code=serializer.validated_data.get('mfa_code')
-        )
-        return Response(result, status=status.HTTP_200_OK)
-    except ValidationError as e:
-        return Response({'error': str(e.message)}, status=status.HTTP_400_BAD_REQUEST)
-    except Exception:
-        return Response({'error': 'Login failed'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    service = LoginService()
+    
+    # Get client IP
+    ip_address = request.META.get('REMOTE_ADDR')
+    user_agent = request.META.get('HTTP_USER_AGENT', '')
+    
+    result = service.execute(
+        serializer.validated_data['email'],
+        serializer.validated_data['password'],
+        mfa_code=serializer.validated_data.get('mfa_code'),
+        ip_address=ip_address,
+        user_agent=user_agent
+    )
+    
+    if not result.get('success'):
+        error = result.get('error', 'Login failed')
+        # Return 429 for locked accounts
+        if 'locked' in error.lower():
+            return Response({'error': error}, status=status.HTTP_429_TOO_MANY_REQUESTS)
+        return Response({'error': error}, status=status.HTTP_401_UNAUTHORIZED)
+    
+    # Handle MFA required
+    if result.get('mfa_required'):
+        return Response({'mfa_required': True, 'user_id': result['user_id']}, status=status.HTTP_200_OK)
+    
+    return Response({
+        'access_token': result['access_token'],
+        'refresh_token': result['refresh_token'],
+        'user': result['user']
+    }, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
