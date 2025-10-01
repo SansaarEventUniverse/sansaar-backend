@@ -6,6 +6,7 @@ from .mfa_secret_model import MFASecret
 from .password_history_model import PASSWORD_HISTORY_SIZE, PasswordHistory
 from .password_reset_token_model import PasswordResetToken
 from .refresh_token_model import RefreshToken
+from .session_model import Session
 from .user_model import User
 
 __all__ = [
@@ -22,4 +23,5 @@ __all__ = [
     'LoginAttempt',
     'LOCKOUT_THRESHOLD',
     'LOCKOUT_DURATION',
+    'Session',
 ]
