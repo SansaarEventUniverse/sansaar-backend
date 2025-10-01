@@ -55,6 +55,23 @@ class User(AbstractBaseUser, PermissionsMixin):
     def has_mfa_enabled(self):
         return hasattr(self, 'mfa_secret') and self.mfa_secret.is_verified
 
+    def is_locked_out(self):
+        """Check if user is locked out due to failed login attempts"""
+        from django.utils import timezone
+        from domain.login_attempt_model import LOCKOUT_THRESHOLD, LOCKOUT_DURATION
+        
+        cutoff_time = timezone.now() - timezone.timedelta(minutes=LOCKOUT_DURATION)
+        recent_failed_attempts = self.login_attempts.filter(
+            success=False,
+            created_at__gte=cutoff_time
+        ).count()
+        
+        return recent_failed_attempts >= LOCKOUT_THRESHOLD
+
+    def reset_login_attempts(self):
+        """Reset all login attempts for user"""
+        self.login_attempts.all().delete()
+
     def has_used_password(self, password):
         """Check if password was used in history"""
         from domain.password_history_model import PASSWORD_HISTORY_SIZE
