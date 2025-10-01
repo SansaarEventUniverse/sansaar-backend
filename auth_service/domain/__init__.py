@@ -1,1 +1,1 @@
-__all__ = ['User', 'AuditLog']
+__all__ = ['User', 'AuditLog', 'LoginAttempt']
