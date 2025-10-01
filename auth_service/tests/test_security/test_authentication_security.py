@@ -35,7 +35,7 @@ class TestAuthenticationSecurity:
             'password': 'Password@123'
         })
 
-        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
         assert 'Email not verified' in str(response.data)
 
     def test_login_with_inactive_account(self):
@@ -47,7 +47,7 @@ class TestAuthenticationSecurity:
             'password': 'Password@123'
         })
 
-        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
         assert 'Account is inactive' in str(response.data)
 
     def test_token_manipulation_attempt(self):
