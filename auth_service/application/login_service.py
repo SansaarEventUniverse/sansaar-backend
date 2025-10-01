@@ -32,12 +32,12 @@ class LoginService:
         # Check if account is locked
         if user.is_locked_out():
             self.audit_service.log_event(
-                event_type=AuditEventType.LOGIN,
+                event_type=AuditEventType.ACCOUNT_LOCKED,
                 user_id=str(user.id),
                 ip_address=ip_address,
                 user_agent=user_agent,
                 success=False,
-                metadata={'reason': 'Account locked'}
+                metadata={'reason': 'Account locked due to failed login attempts'}
             )
             return {'success': False, 'error': 'Account is locked due to too many failed login attempts. Please try again later.'}
 

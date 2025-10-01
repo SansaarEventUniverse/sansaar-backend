@@ -8,6 +8,7 @@ class AuditEventType:
     EMAIL_VERIFICATION = 'EMAIL_VERIFICATION'
     PASSWORD_RESET = 'PASSWORD_RESET'
     PASSWORD_CHANGE = 'PASSWORD_CHANGE'
+    ACCOUNT_LOCKED = 'ACCOUNT_LOCKED'
 
     CHOICES = [
         (REGISTRATION, 'Registration'),
@@ -16,6 +17,7 @@ class AuditEventType:
         (EMAIL_VERIFICATION, 'Email Verification'),
         (PASSWORD_RESET, 'Password Reset'),
         (PASSWORD_CHANGE, 'Password Change'),
+        (ACCOUNT_LOCKED, 'Account Locked'),
     ]
 
 
