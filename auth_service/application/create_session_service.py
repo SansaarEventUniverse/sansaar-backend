@@ -1,7 +1,12 @@
+from application.log_audit_event_service import LogAuditEventService
+from domain.audit_log_model import AuditEventType
 from domain.session_model import Session
 
 
 class CreateSessionService:
+    def __init__(self):
+        self.audit_service = LogAuditEventService()
+
     def execute(self, user, ip_address=None, user_agent=None):
         """Create a new session for user"""
         # Parse device info from user agent
@@ -14,6 +19,20 @@ class CreateSessionService:
             device_type=device_type,
             browser=browser,
             os=os
+        )
+        
+        # Log session creation
+        self.audit_service.log_event(
+            event_type=AuditEventType.SESSION_CREATED,
+            user_id=str(user.id),
+            ip_address=ip_address,
+            user_agent=user_agent,
+            metadata={
+                'session_id': str(session.id),
+                'device_type': device_type,
+                'browser': browser,
+                'os': os
+            }
         )
         
         return session
