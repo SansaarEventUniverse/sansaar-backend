@@ -9,6 +9,8 @@ class AuditEventType:
     PASSWORD_RESET = 'PASSWORD_RESET'
     PASSWORD_CHANGE = 'PASSWORD_CHANGE'
     ACCOUNT_LOCKED = 'ACCOUNT_LOCKED'
+    SESSION_CREATED = 'SESSION_CREATED'
+    SESSION_REVOKED = 'SESSION_REVOKED'
 
     CHOICES = [
         (REGISTRATION, 'Registration'),
@@ -18,6 +20,8 @@ class AuditEventType:
         (PASSWORD_RESET, 'Password Reset'),
         (PASSWORD_CHANGE, 'Password Change'),
         (ACCOUNT_LOCKED, 'Account Locked'),
+        (SESSION_CREATED, 'Session Created'),
+        (SESSION_REVOKED, 'Session Revoked'),
     ]
 
 

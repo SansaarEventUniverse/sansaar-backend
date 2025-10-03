@@ -13,6 +13,7 @@ from .views.auth_views import (
 )
 from .views.health_views import health_check
 from .views.mfa_views import disable_mfa, enable_mfa, verify_mfa
+from .views.session_views import list_sessions, revoke_all_sessions, revoke_session
 
 urlpatterns = [
     path('health/', health_check, name='health_check'),
@@ -27,5 +28,8 @@ urlpatterns = [
     path('mfa/enable/', enable_mfa, name='enable_mfa'),
     path('mfa/verify/', verify_mfa, name='verify_mfa'),
     path('mfa/disable/', disable_mfa, name='disable_mfa'),
+    path('sessions/', list_sessions, name='list_sessions'),
+    path('sessions/<int:session_id>/', revoke_session, name='revoke_session'),
+    path('sessions/all/', revoke_all_sessions, name='revoke_all_sessions'),
     path('google/callback/', google_callback, name='google_callback'),
 ]

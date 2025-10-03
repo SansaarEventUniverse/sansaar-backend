@@ -83,6 +83,7 @@ def login(request):
     return Response({
         'access_token': result['access_token'],
         'refresh_token': result['refresh_token'],
+        'session_id': result['session_id'],
         'user': result['user']
     }, status=status.HTTP_200_OK)
 

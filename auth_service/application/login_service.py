@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
 
+from application.create_session_service import CreateSessionService
 from application.log_audit_event_service import LogAuditEventService
 from application.verify_mfa_service import VerifyMFAService
 from domain.audit_log_model import AuditEventType
@@ -13,6 +14,7 @@ class LoginService:
     def __init__(self):
         self.audit_service = LogAuditEventService()
         self.mfa_service = VerifyMFAService()
+        self.session_service = CreateSessionService()
 
     def execute(self, email, password, mfa_code=None, ip_address=None, user_agent=None):
         """Execute login with lockout protection"""
@@ -79,9 +81,16 @@ class LoginService:
         # Reset login attempts on successful login
         user.reset_login_attempts()
 
-        # Generate tokens
+        # Create session
+        session = self.session_service.execute(
+            user=user,
+            ip_address=ip_address,
+            user_agent=user_agent
+        )
+
+        # Generate tokens with session_id
         jwt_service = JWTService()
-        access_token = jwt_service.generate_access_token(user)
+        access_token = jwt_service.generate_access_token(user, session_id=session.id)
         refresh_token_jwt = jwt_service.generate_refresh_token(user)
 
         # Store refresh token in database
@@ -93,13 +102,14 @@ class LoginService:
             user_id=str(user.id),
             ip_address=ip_address,
             user_agent=user_agent,
-            metadata={'email': user.email}
+            metadata={'email': user.email, 'session_id': str(session.id)}
         )
 
         return {
             'success': True,
             'access_token': access_token,
             'refresh_token': refresh_token_jwt,
+            'session_id': str(session.id),
             'user': {
                 'id': user.id,
                 'email': user.email,
