@@ -14,6 +14,19 @@ def list_sessions(request):
     service = ListSessionsService()
     sessions = service.execute(request.user)
     
+    # Get current session_id from JWT token
+    current_session_id = None
+    auth_header = request.META.get('HTTP_AUTHORIZATION', '')
+    if auth_header.startswith('Bearer '):
+        token = auth_header.split(' ')[1]
+        try:
+            from infrastructure.services.jwt_service import JWTService
+            jwt_service = JWTService()
+            payload = jwt_service.decode_token(token)
+            current_session_id = payload.get('session_id')
+        except:
+            pass
+    
     data = [{
         'id': str(session.id),
         'ip_address': session.ip_address,
@@ -22,7 +35,8 @@ def list_sessions(request):
         'os': session.os,
         'location': session.location,
         'last_activity_at': session.last_activity_at,
-        'created_at': session.created_at
+        'created_at': session.created_at,
+        'is_current': (session.id == current_session_id)
     } for session in sessions]
     
     return Response(data, status=status.HTTP_200_OK)

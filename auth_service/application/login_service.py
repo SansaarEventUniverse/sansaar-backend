@@ -88,9 +88,9 @@ class LoginService:
             user_agent=user_agent
         )
 
-        # Generate tokens
+        # Generate tokens with session_id
         jwt_service = JWTService()
-        access_token = jwt_service.generate_access_token(user)
+        access_token = jwt_service.generate_access_token(user, session_id=session.id)
         refresh_token_jwt = jwt_service.generate_refresh_token(user)
 
         # Store refresh token in database
