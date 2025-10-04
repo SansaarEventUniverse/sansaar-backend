@@ -1,5 +1,4 @@
 import re
-from pathlib import Path
 
 from django.core.exceptions import ValidationError
 
@@ -8,18 +7,14 @@ from application.tasks import delete_unverified_user
 from domain.audit_log_model import AuditEventType
 from domain.email_verification_token_model import EmailVerificationToken
 from domain.user_model import User
+from infrastructure.services.disposable_email_service import DisposableEmailService
 from infrastructure.services.email_service import EmailService
 
 
 class RegisterUserService:
     def __init__(self):
-        self._load_disposable_domains()
+        self.disposable_email_service = DisposableEmailService()
         self.audit_service = LogAuditEventService()
-
-    def _load_disposable_domains(self):
-        file_path = Path(__file__).parent / 'data' / 'disposable_email_domains.txt'
-        with open(file_path) as f:
-            self.disposable_domains = {line.strip() for line in f if line.strip()}
 
     def register(self, data, ip_address=None, user_agent=None):
         self._validate_terms(data.get('agree_terms'))
@@ -80,8 +75,7 @@ class RegisterUserService:
             raise ValidationError('Password must contain at least one special character')
 
     def _validate_email(self, email):
-        domain = email.split('@')[1] if '@' in email else ''
-        if domain in self.disposable_domains:
+        if self.disposable_email_service.is_disposable(email):
             raise ValidationError('Disposable email addresses are not allowed')
 
         if User.objects.filter(email=email).exists():
