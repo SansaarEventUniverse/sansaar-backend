@@ -19,7 +19,6 @@ class EventRole(models.Model):
     
     class Meta:
         db_table = 'event_roles'
-        unique_together = [['event_id', 'user_id', 'is_active']]
         indexes = [
             models.Index(fields=['event_id', 'user_id']),
             models.Index(fields=['user_id', 'is_active']),
