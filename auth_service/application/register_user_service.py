@@ -7,6 +7,7 @@ from application.tasks import delete_unverified_user
 from domain.audit_log_model import AuditEventType
 from domain.email_verification_token_model import EmailVerificationToken
 from domain.user_model import User
+from domain.user_role_model import UserRole
 from infrastructure.services.disposable_email_service import DisposableEmailService
 from infrastructure.services.email_service import EmailService
 
@@ -28,7 +29,8 @@ class RegisterUserService:
             last_name=data['last_name']
         )
 
-        # Log audit event
+        UserRole.objects.create(user=user, role='USER')
+
         self.audit_service.log_event(
             event_type=AuditEventType.REGISTRATION,
             user_id=str(user.id),
@@ -37,7 +39,6 @@ class RegisterUserService:
             metadata={'email': user.email}
         )
 
-        # Create verification token and send email
         token = EmailVerificationToken.objects.create(user=user)
         email_service = EmailService()
         email_service.send_verification_email(
@@ -46,7 +47,6 @@ class RegisterUserService:
             first_name=user.first_name
         )
 
-        # Schedule deletion of unverified user after 10 minutes
         delete_unverified_user.apply_async(args=[user.id], countdown=600)
 
         return user

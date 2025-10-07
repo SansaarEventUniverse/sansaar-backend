@@ -8,6 +8,7 @@ from .password_reset_token_model import PasswordResetToken
 from .refresh_token_model import RefreshToken
 from .session_model import Session
 from .user_model import User
+from .user_role_model import UserRole
 
 __all__ = [
     'User',
@@ -24,4 +25,5 @@ __all__ = [
     'LOCKOUT_THRESHOLD',
     'LOCKOUT_DURATION',
     'Session',
+    'UserRole',
 ]
