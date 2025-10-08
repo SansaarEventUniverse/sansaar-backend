@@ -27,8 +27,7 @@ class AssignOrgRoleView(APIView):
             service = AssignOrgRoleService()
             role = service.assign(
                 organization_id,
-                serializer.validated_data['user_id'],
-                serializer.validated_data['role']
+                serializer.validated_data['user_id']
             )
             
             cache_service = OrgPermissionCacheService()

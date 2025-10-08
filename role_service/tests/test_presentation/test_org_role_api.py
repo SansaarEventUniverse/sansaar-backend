@@ -22,21 +22,21 @@ class TestOrgRoleAPI:
     def test_assign_org_role(self, api_client, cache_service):
         response = api_client.post(
             '/api/role/organizations/org-123/assign/',
-            {'user_id': 'user-456', 'role': 'ADMIN'},
+            {'user_id': 'user-456'},
             format='json'
         )
         assert response.status_code == 201
-        assert response.data['role'] == 'ADMIN'
+        assert response.data['role'] == 'OWNER'
     
     def test_assign_duplicate_role(self, api_client, cache_service):
         OrganizationRole.objects.create(
             organization_id='org-123',
             user_id='user-456',
-            role='ADMIN'
+            role='OWNER'
         )
         response = api_client.post(
             '/api/role/organizations/org-123/assign/',
-            {'user_id': 'user-456', 'role': 'MEMBER'},
+            {'user_id': 'user-456'},
             format='json'
         )
         assert response.status_code == 400

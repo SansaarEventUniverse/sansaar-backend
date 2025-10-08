@@ -3,7 +3,6 @@ from rest_framework import serializers
 
 class AssignOrgRoleSerializer(serializers.Serializer):
     user_id = serializers.CharField(max_length=255)
-    role = serializers.ChoiceField(choices=['OWNER', 'ADMIN', 'MEMBER'])
 
 
 class RevokeOrgRoleSerializer(serializers.Serializer):

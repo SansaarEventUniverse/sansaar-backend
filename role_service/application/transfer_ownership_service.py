@@ -16,19 +16,7 @@ class TransferOwnershipService:
         
         current_owner.validate_ownership_transfer(new_owner_id)
         
-        new_owner_role = OrganizationRole.objects.filter(
-            organization_id=organization_id,
-            user_id=new_owner_id,
-            is_active=True
-        ).first()
+        current_owner.user_id = new_owner_id
+        current_owner.save()
         
-        if new_owner_role:
-            new_owner_role.revoke()
-        
-        current_owner.revoke()
-        
-        return OrganizationRole.objects.create(
-            organization_id=organization_id,
-            user_id=new_owner_id,
-            role='OWNER'
-        )
+        return current_owner

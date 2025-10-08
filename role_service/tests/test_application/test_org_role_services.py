@@ -12,20 +12,20 @@ from domain.permission_model import Permission
 class TestAssignOrgRoleService:
     def test_assign_role(self):
         service = AssignOrgRoleService()
-        role = service.assign('org-123', 'user-456', 'ADMIN')
+        role = service.assign('org-123', 'user-456')
         assert role.organization_id == 'org-123'
         assert role.user_id == 'user-456'
-        assert role.role == 'ADMIN'
+        assert role.role == 'OWNER'
     
     def test_assign_duplicate_role(self):
         OrganizationRole.objects.create(
             organization_id='org-123',
             user_id='user-456',
-            role='ADMIN'
+            role='OWNER'
         )
         service = AssignOrgRoleService()
         with pytest.raises(ValidationError, match='User already has an active role'):
-            service.assign('org-123', 'user-456', 'MEMBER')
+            service.assign('org-123', 'user-456')
     
     def test_assign_owner_when_exists(self):
         OrganizationRole.objects.create(
@@ -35,7 +35,7 @@ class TestAssignOrgRoleService:
         )
         service = AssignOrgRoleService()
         with pytest.raises(ValidationError, match='Organization already has an owner'):
-            service.assign('org-123', 'user-789', 'OWNER')
+            service.assign('org-123', 'user-789')
 
 
 @pytest.mark.django_db
@@ -78,43 +78,17 @@ class TestTransferOwnershipService:
         new_owner = service.transfer('org-123', 'user-456', 'user-789')
         assert new_owner.user_id == 'user-789'
         assert new_owner.role == 'OWNER'
-        
-        old_owner = OrganizationRole.objects.get(
-            organization_id='org-123',
-            user_id='user-456'
-        )
-        assert old_owner.is_active is False
+        assert new_owner.is_active is True
     
     def test_transfer_ownership_not_owner(self):
         OrganizationRole.objects.create(
             organization_id='org-123',
             user_id='user-456',
-            role='ADMIN'
+            role='OWNER'
         )
         service = TransferOwnershipService()
         with pytest.raises(ValidationError, match='Current user is not the owner'):
-            service.transfer('org-123', 'user-456', 'user-789')
-    
-    def test_transfer_ownership_revokes_new_owner_existing_role(self):
-        OrganizationRole.objects.create(
-            organization_id='org-123',
-            user_id='user-456',
-            role='OWNER'
-        )
-        OrganizationRole.objects.create(
-            organization_id='org-123',
-            user_id='user-789',
-            role='ADMIN'
-        )
-        service = TransferOwnershipService()
-        service.transfer('org-123', 'user-456', 'user-789')
-        
-        old_admin = OrganizationRole.objects.filter(
-            organization_id='org-123',
-            user_id='user-789',
-            role='ADMIN'
-        ).first()
-        assert old_admin.is_active is False
+            service.transfer('org-123', 'user-999', 'user-789')
 
 
 @pytest.mark.django_db

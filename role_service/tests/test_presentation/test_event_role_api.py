@@ -16,13 +16,13 @@ class TestEventRoleAPI:
     def test_assign_event_role(self):
         response = self.client.post('/api/role/events/event-123/assign/', {
             'user_id': 'user-456',
-            'role': 'ORGANIZER'
+            'role': 'ADMIN'
         })
 
         assert response.status_code == 201
         assert response.json()['event_id'] == 'event-123'
         assert response.json()['user_id'] == 'user-456'
-        assert response.json()['role'] == 'ORGANIZER'
+        assert response.json()['role'] == 'ADMIN'
 
     def test_assign_role_already_exists(self):
         EventRole.objects.create(

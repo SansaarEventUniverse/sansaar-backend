@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 class AssignEventRoleSerializer(serializers.Serializer):
     user_id = serializers.CharField(max_length=255)
-    role = serializers.ChoiceField(choices=['ORGANIZATION', 'ORGANIZER', 'VOLUNTEER', 'ATTENDEE'])
+    role = serializers.ChoiceField(choices=['ADMIN', 'MEMBER', 'VOLUNTEER', 'ATTENDEE'])
 
 
 class RevokeEventRoleSerializer(serializers.Serializer):
