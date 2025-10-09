@@ -6,7 +6,12 @@ from django.http import JsonResponse
 class PermissionMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
-        self.exempt_paths = ['/api/role/health/', '/admin/']
+        self.exempt_paths = [
+            '/api/role/health/',
+            '/api/role/events/',
+            '/api/role/organizations/',
+            '/admin/'
+        ]
     
     def __call__(self, request):
         if any(request.path.startswith(path) for path in self.exempt_paths):
