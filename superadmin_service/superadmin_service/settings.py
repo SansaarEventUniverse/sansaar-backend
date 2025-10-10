@@ -27,6 +27,8 @@ SECRET_KEY = config("SECRET_KEY")
 
 # SuperAdmin JWT Secret Key (separate from main SECRET_KEY)
 SUPERADMIN_JWT_SECRET = config("SUPERADMIN_JWT_SECRET")
+SUPERADMIN_JWT_ALGORITHM = "HS256"
+SUPERADMIN_JWT_EXPIRY_HOURS = 2
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", cast=bool)
