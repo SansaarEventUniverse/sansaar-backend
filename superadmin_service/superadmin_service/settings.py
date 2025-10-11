@@ -139,6 +139,14 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 ELASTICSEARCH_HOST = config("ELASTICSEARCH_HOST")
 ELASTICSEARCH_PORT = config("ELASTICSEARCH_PORT", cast=int)
 
+# Redis Cache Configuration
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": f"redis://{config('REDIS_HOST')}:{config('REDIS_PORT')}/0",
+    }
+}
+
 # Sentry Configuration
 SENTRY_DSN = config("SENTRY_DSN", default="")
 if SENTRY_DSN:
