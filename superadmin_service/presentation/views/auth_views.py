@@ -5,6 +5,7 @@ from rest_framework.response import Response
 
 from application.superadmin_login_service import SuperAdminLoginService
 from application.superadmin_logout_service import SuperAdminLogoutService
+from infrastructure.audit.audit_logger import AuditLogger
 from infrastructure.services.ip_whitelist_service import IPWhitelistService
 from infrastructure.services.jwt_service import JWTService
 from presentation.serializers.auth_serializers import (
@@ -32,7 +33,8 @@ def superadmin_login(request):
     ip_address = get_client_ip(request)
     ip_service = IPWhitelistService()
     jwt_service = JWTService()
-    login_service = SuperAdminLoginService(ip_service, jwt_service)
+    audit_logger = AuditLogger()
+    login_service = SuperAdminLoginService(ip_service, jwt_service, audit_logger)
 
     try:
         result = login_service.login(
@@ -54,9 +56,11 @@ def superadmin_logout(request):
         return Response({"error": "Authorization header required"}, status=status.HTTP_401_UNAUTHORIZED)
 
     token = auth_header.split(" ")[1]
+    ip_address = get_client_ip(request)
     jwt_service = JWTService()
-    logout_service = SuperAdminLogoutService(jwt_service)
+    audit_logger = AuditLogger()
+    logout_service = SuperAdminLogoutService(jwt_service, audit_logger)
 
-    result = logout_service.logout(token)
+    result = logout_service.logout(token, ip_address)
     response_serializer = SuperAdminLogoutSerializer(result)
     return Response(response_serializer.data, status=status.HTTP_200_OK)
