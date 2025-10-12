@@ -15,17 +15,17 @@ from presentation.serializers.profile_serializers import (
 )
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 @permission_classes([AllowAny])
 def list_profiles(request):
-    page = int(request.GET.get('page', 1))
-    limit = int(request.GET.get('limit', 50))
+    page = int(request.GET.get("page", 1))
+    limit = int(request.GET.get("limit", 50))
     service = ListProfilesService()
     result = service.list_profiles(page, limit)
     return Response(result, status=status.HTTP_200_OK)
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 @permission_classes([AllowAny])
 def get_profile(request, user_id):
     try:
@@ -34,10 +34,10 @@ def get_profile(request, user_id):
         serializer = UserProfileSerializer(profile)
         return Response(serializer.data, status=status.HTTP_200_OK)
     except ValidationError as e:
-        return Response({'error': str(e.message)}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"error": str(e.message)}, status=status.HTTP_404_NOT_FOUND)
 
 
-@api_view(['PUT'])
+@api_view(["PUT"])
 @permission_classes([AllowAny])
 def update_profile(request, user_id):
     serializer = UpdateProfileSerializer(data=request.data)
@@ -50,10 +50,10 @@ def update_profile(request, user_id):
         profile_serializer = UserProfileSerializer(profile)
         return Response(profile_serializer.data, status=status.HTTP_200_OK)
     except ValidationError as e:
-        return Response({'error': str(e.message)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"error": str(e.message)}, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 @permission_classes([AllowAny])
 def upload_profile_picture(request, user_id):
     serializer = UploadProfilePictureSerializer(data=request.data)
@@ -62,8 +62,8 @@ def upload_profile_picture(request, user_id):
 
     try:
         service = UploadProfilePictureService()
-        profile = service.upload(user_id, serializer.validated_data['file'])
+        profile = service.upload(user_id, serializer.validated_data["file"])
         profile_serializer = UserProfileSerializer(profile)
         return Response(profile_serializer.data, status=status.HTTP_200_OK)
     except ValidationError as e:
-        return Response({'error': str(e.message)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"error": str(e.message)}, status=status.HTTP_400_BAD_REQUEST)

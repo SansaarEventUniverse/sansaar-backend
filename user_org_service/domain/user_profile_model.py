@@ -13,8 +13,8 @@ class UserProfile(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        db_table = 'user_profiles'
-        ordering = ['-created_at']
+        db_table = "user_profiles"
+        ordering = ["-created_at"]
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"

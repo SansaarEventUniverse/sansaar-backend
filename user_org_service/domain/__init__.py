@@ -1,1 +1,1 @@
-__all__ = ['UserProfile']
+__all__ = ["UserProfile"]
