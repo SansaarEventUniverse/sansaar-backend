@@ -139,6 +139,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 ELASTICSEARCH_HOST = config("ELASTICSEARCH_HOST")
 ELASTICSEARCH_PORT = config("ELASTICSEARCH_PORT", cast=int)
 
+# Auth Service URL
+AUTH_SERVICE_URL = config("AUTH_SERVICE_URL", default="http://localhost:8001")
+USER_ORG_SERVICE_URL = config("USER_ORG_SERVICE_URL", default="http://localhost:8002")
+
 # Redis Cache Configuration
 CACHES = {
     "default": {
