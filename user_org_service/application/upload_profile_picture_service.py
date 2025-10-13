@@ -12,12 +12,12 @@ class UploadProfilePictureService:
         # Validate file size (max 5MB)
         max_size = 5 * 1024 * 1024
         if file.size > max_size:
-            raise ValidationError('File size must not exceed 5MB')
+            raise ValidationError("File size must not exceed 5MB")
 
         try:
             profile = UserProfile.objects.get(user_id=user_id)
         except UserProfile.DoesNotExist:
-            raise ValidationError('Profile not found')
+            raise ValidationError("Profile not found")
 
         # Upload to S3
         url = self.s3_service.upload_profile_picture(file, user_id)

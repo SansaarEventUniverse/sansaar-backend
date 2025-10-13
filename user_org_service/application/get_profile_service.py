@@ -8,4 +8,4 @@ class GetProfileService:
         try:
             return UserProfile.objects.get(user_id=user_id)
         except UserProfile.DoesNotExist:
-            raise ValidationError('Profile not found')
+            raise ValidationError("Profile not found")
