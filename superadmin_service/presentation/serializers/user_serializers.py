@@ -2,10 +2,14 @@ from rest_framework import serializers
 
 
 class UserSerializer(serializers.Serializer):
-    id = serializers.CharField()
+    user_id = serializers.CharField()
     email = serializers.EmailField()
-    is_active = serializers.BooleanField()
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    bio = serializers.CharField(required=False, allow_blank=True)
+    profile_picture_url = serializers.URLField(required=False, allow_null=True)
     created_at = serializers.DateTimeField()
+    updated_at = serializers.DateTimeField()
 
 
 class UserListResponseSerializer(serializers.Serializer):

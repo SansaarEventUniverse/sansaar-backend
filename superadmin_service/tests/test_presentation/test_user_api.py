@@ -9,7 +9,16 @@ class TestUserManagementAPI:
         mock_service = Mock()
         mock_service.get_users.return_value = {
             "users": [
-                {"id": "1", "email": "user@example.com", "is_active": True, "created_at": "2024-01-01T00:00:00Z"}
+                {
+                    "user_id": "1",
+                    "email": "user@example.com",
+                    "first_name": "John",
+                    "last_name": "Doe",
+                    "bio": "",
+                    "profile_picture_url": None,
+                    "created_at": "2024-01-01T00:00:00Z",
+                    "updated_at": "2024-01-01T00:00:00Z",
+                }
             ],
             "total": 1,
             "page": 1,
@@ -40,10 +49,14 @@ class TestUserManagementAPI:
     def test_view_user_success(self, mock_audit, mock_service_class):
         mock_service = Mock()
         mock_service.get_user_by_id.return_value = {
-            "id": "user-123",
+            "user_id": "user-123",
             "email": "user@example.com",
-            "is_active": True,
+            "first_name": "John",
+            "last_name": "Doe",
+            "bio": "",
+            "profile_picture_url": None,
             "created_at": "2024-01-01T00:00:00Z",
+            "updated_at": "2024-01-01T00:00:00Z",
         }
         mock_service_class.return_value = mock_service
 
@@ -51,7 +64,7 @@ class TestUserManagementAPI:
         response = client.get("/api/superadmin/users/user-123/")
 
         assert response.status_code == 200
-        assert response.json()["id"] == "user-123"
+        assert response.json()["user_id"] == "user-123"
 
     @patch("presentation.views.user_views.UserManagementService")
     @patch("presentation.views.user_views.AuditLogger")

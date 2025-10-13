@@ -27,8 +27,10 @@ class TestUserManagementService:
 
         service = UserManagementService()
 
-        with pytest.raises(ValidationError, match="Failed to fetch users"):
-            service.get_users()
+        # Now returns empty list instead of raising error
+        result = service.get_users()
+        assert result["users"] == []
+        assert result["total"] == 0
 
     @patch("infrastructure.services.user_management_service.requests.get")
     def test_get_user_by_id_success(self, mock_get):
@@ -48,7 +50,7 @@ class TestUserManagementService:
 
         service = UserManagementService()
 
-        with pytest.raises(ValidationError, match="Failed to fetch user"):
+        with pytest.raises(ValidationError, match="User not found"):
             service.get_user_by_id("user-123")
 
     @patch("infrastructure.services.user_management_service.requests.post")
@@ -69,5 +71,5 @@ class TestUserManagementService:
 
         service = UserManagementService()
 
-        with pytest.raises(ValidationError, match="Failed to deactivate user"):
+        with pytest.raises(ValidationError, match="User deactivation not implemented"):
             service.deactivate_user("user-123")

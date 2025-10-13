@@ -5,6 +5,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from application.get_profile_service import GetProfileService
+from application.list_profiles_service import ListProfilesService
 from application.update_profile_service import UpdateProfileService
 from application.upload_profile_picture_service import UploadProfilePictureService
 from presentation.serializers.profile_serializers import (
@@ -12,6 +13,16 @@ from presentation.serializers.profile_serializers import (
     UploadProfilePictureSerializer,
     UserProfileSerializer,
 )
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def list_profiles(request):
+    page = int(request.GET.get('page', 1))
+    limit = int(request.GET.get('limit', 50))
+    service = ListProfilesService()
+    result = service.list_profiles(page, limit)
+    return Response(result, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
