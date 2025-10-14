@@ -37,3 +37,27 @@ class EventPublisher:
         except Exception as e:
             logger.error(f"Failed to publish user registered event: {str(e)}")
             return False
+
+    def publish_account_anonymized(self, event_data):
+        try:
+            credentials = pika.PlainCredentials(self.user, self.password)
+            parameters = pika.ConnectionParameters(host=self.host, port=self.port, credentials=credentials)
+
+            connection = pika.BlockingConnection(parameters)
+            channel = connection.channel()
+
+            channel.exchange_declare(exchange="auth_events", exchange_type="topic", durable=True)
+
+            message = json.dumps(event_data)
+            channel.basic_publish(
+                exchange="auth_events",
+                routing_key="account.anonymized",
+                body=message,
+                properties=pika.BasicProperties(delivery_mode=2),
+            )
+
+            connection.close()
+            return True
+        except Exception as e:
+            logger.error(f"Failed to publish account anonymized event: {str(e)}")
+            return False
