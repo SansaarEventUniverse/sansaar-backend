@@ -51,3 +51,49 @@ class User(AbstractBaseUser, PermissionsMixin):
     def deactivate(self):
         self.is_active = False
         self.save(update_fields=['is_active'])
+
+    def has_mfa_enabled(self):
+        return hasattr(self, 'mfa_secret') and self.mfa_secret.is_verified
+
+    def is_locked_out(self):
+        """Check if user is locked out due to failed login attempts"""
+        from django.utils import timezone
+        from domain.login_attempt_model import LOCKOUT_THRESHOLD, LOCKOUT_DURATION
+        
+        cutoff_time = timezone.now() - timezone.timedelta(minutes=LOCKOUT_DURATION)
+        recent_failed_attempts = self.login_attempts.filter(
+            success=False,
+            created_at__gte=cutoff_time
+        ).count()
+        
+        return recent_failed_attempts >= LOCKOUT_THRESHOLD
+
+    def reset_login_attempts(self):
+        """Reset all login attempts for user"""
+        self.login_attempts.all().delete()
+
+    def has_used_password(self, password):
+        """Check if password was used in history"""
+        from domain.password_history_model import PASSWORD_HISTORY_SIZE
+
+        recent_passwords = self.password_history.all()[:PASSWORD_HISTORY_SIZE]
+        for history in recent_passwords:
+            if self.check_password_hash(password, history.password_hash):
+                return True
+        return False
+
+    def check_password_hash(self, password, password_hash):
+        """Check if password matches the given hash"""
+        from django.contrib.auth.hashers import check_password
+        return check_password(password, password_hash)
+
+    def add_password_to_history(self, password_hash):
+        """Add password to history and maintain size limit"""
+        from domain.password_history_model import PASSWORD_HISTORY_SIZE, PasswordHistory
+
+        PasswordHistory.objects.create(user=self, password_hash=password_hash)
+
+        # Keep only last N passwords
+        old_passwords = self.password_history.all()[PASSWORD_HISTORY_SIZE:]
+        for old_password in old_passwords:
+            old_password.delete()

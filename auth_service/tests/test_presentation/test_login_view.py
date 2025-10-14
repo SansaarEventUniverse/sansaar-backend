@@ -38,7 +38,7 @@ class TestLoginView:
         }
         response = self.client.post(self.url, data, format='json')
 
-        assert response.status_code == 400
+        assert response.status_code == 401
         assert 'error' in response.data
 
     def test_login_missing_fields(self):
@@ -61,5 +61,5 @@ class TestLoginView:
         }
         response = self.client.post(self.url, data, format='json')
 
-        assert response.status_code == 400
+        assert response.status_code == 401
         assert 'error' in response.data

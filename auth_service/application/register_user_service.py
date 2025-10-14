@@ -1,24 +1,23 @@
 import re
-from pathlib import Path
 
 from django.core.exceptions import ValidationError
 
+from application.log_audit_event_service import LogAuditEventService
 from application.tasks import delete_unverified_user
+from domain.audit_log_model import AuditEventType
 from domain.email_verification_token_model import EmailVerificationToken
 from domain.user_model import User
+from domain.user_role_model import UserRole
+from infrastructure.services.disposable_email_service import DisposableEmailService
 from infrastructure.services.email_service import EmailService
 
 
 class RegisterUserService:
     def __init__(self):
-        self._load_disposable_domains()
+        self.disposable_email_service = DisposableEmailService()
+        self.audit_service = LogAuditEventService()
 
-    def _load_disposable_domains(self):
-        file_path = Path(__file__).parent / 'data' / 'disposable_email_domains.txt'
-        with open(file_path) as f:
-            self.disposable_domains = {line.strip() for line in f if line.strip()}
-
-    def register(self, data):
+    def register(self, data, ip_address=None, user_agent=None):
         self._validate_terms(data.get('agree_terms'))
         self._validate_passwords(data.get('password'), data.get('confirm_password'))
         self._validate_email(data.get('email'))
@@ -30,7 +29,16 @@ class RegisterUserService:
             last_name=data['last_name']
         )
 
-        # Create verification token and send email
+        UserRole.objects.create(user=user, role='USER')
+
+        self.audit_service.log_event(
+            event_type=AuditEventType.REGISTRATION,
+            user_id=str(user.id),
+            ip_address=ip_address,
+            user_agent=user_agent,
+            metadata={'email': user.email}
+        )
+
         token = EmailVerificationToken.objects.create(user=user)
         email_service = EmailService()
         email_service.send_verification_email(
@@ -39,7 +47,6 @@ class RegisterUserService:
             first_name=user.first_name
         )
 
-        # Schedule deletion of unverified user after 10 minutes
         delete_unverified_user.apply_async(args=[user.id], countdown=600)
 
         return user
@@ -68,8 +75,7 @@ class RegisterUserService:
             raise ValidationError('Password must contain at least one special character')
 
     def _validate_email(self, email):
-        domain = email.split('@')[1] if '@' in email else ''
-        if domain in self.disposable_domains:
+        if self.disposable_email_service.is_disposable(email):
             raise ValidationError('Disposable email addresses are not allowed')
 
         if User.objects.filter(email=email).exists():
