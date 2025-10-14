@@ -108,3 +108,18 @@ def delete_profile_picture(request, user_id):
         return Response(result, status=status.HTTP_200_OK)
     except ValueError as e:
         return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def export_user_data(request, user_id):
+    from application.export_user_data_service import ExportUserDataService
+    from infrastructure.services.auth_data_service import AuthDataService
+
+    try:
+        auth_service = AuthDataService()
+        service = ExportUserDataService(auth_service)
+        data = service.export_data(user_id)
+        return Response(data, status=status.HTTP_200_OK)
+    except ValueError as e:
+        return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
