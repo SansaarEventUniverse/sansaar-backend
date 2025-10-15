@@ -28,6 +28,10 @@ class S3Service:
     def delete_profile_picture(self, key):
         self.s3_client.delete_object(Bucket=self.bucket_name, Key=key)
 
+    def delete_file(self, key):
+        """Alias for delete_profile_picture"""
+        self.delete_profile_picture(key)
+
     def check_connection(self):
         try:
             self.s3_client.head_bucket(Bucket=self.bucket_name)

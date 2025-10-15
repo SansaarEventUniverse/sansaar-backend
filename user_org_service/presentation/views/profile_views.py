@@ -67,3 +67,44 @@ def upload_profile_picture(request, user_id):
         return Response(profile_serializer.data, status=status.HTTP_200_OK)
     except ValidationError as e:
         return Response({"error": str(e.message)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["DELETE"])
+@permission_classes([AllowAny])
+def delete_phone(request, user_id):
+    from application.delete_phone_service import DeletePhoneService
+
+    try:
+        service = DeletePhoneService()
+        result = service.delete_phone(user_id)
+        return Response(result, status=status.HTTP_200_OK)
+    except ValueError as e:
+        return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(["DELETE"])
+@permission_classes([AllowAny])
+def delete_address(request, user_id):
+    from application.delete_address_service import DeleteAddressService
+
+    try:
+        service = DeleteAddressService()
+        result = service.delete_address(user_id)
+        return Response(result, status=status.HTTP_200_OK)
+    except ValueError as e:
+        return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(["DELETE"])
+@permission_classes([AllowAny])
+def delete_profile_picture(request, user_id):
+    from application.delete_profile_picture_service import DeleteProfilePictureService
+    from infrastructure.storage.s3_service import S3Service
+
+    try:
+        s3_service = S3Service()
+        service = DeleteProfilePictureService(s3_service)
+        result = service.delete_picture(user_id)
+        return Response(result, status=status.HTTP_200_OK)
+    except ValueError as e:
+        return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
