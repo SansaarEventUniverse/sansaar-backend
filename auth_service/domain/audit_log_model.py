@@ -11,6 +11,7 @@ class AuditEventType:
     ACCOUNT_LOCKED = "ACCOUNT_LOCKED"
     SESSION_CREATED = "SESSION_CREATED"
     SESSION_REVOKED = "SESSION_REVOKED"
+    ACCOUNT_ANONYMIZED = "ACCOUNT_ANONYMIZED"
 
     CHOICES = [
         (REGISTRATION, "Registration"),
@@ -22,6 +23,7 @@ class AuditEventType:
         (ACCOUNT_LOCKED, "Account Locked"),
         (SESSION_CREATED, "Session Created"),
         (SESSION_REVOKED, "Session Revoked"),
+        (ACCOUNT_ANONYMIZED, "Account Anonymized"),
     ]
 
 
