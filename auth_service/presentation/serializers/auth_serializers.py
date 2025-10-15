@@ -12,8 +12,8 @@ class RegisterUserSerializer(serializers.Serializer):
     agree_terms = serializers.BooleanField()
 
     def validate(self, data):
-        if data['password'] != data['confirm_password']:
-            raise serializers.ValidationError('Passwords do not match')
+        if data["password"] != data["confirm_password"]:
+            raise serializers.ValidationError("Passwords do not match")
         return data
 
 
@@ -52,5 +52,5 @@ class VerifyMFASerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'email', 'first_name', 'last_name', 'is_email_verified', 'date_joined']
-        read_only_fields = ['id', 'is_email_verified', 'date_joined']
+        fields = ["id", "email", "first_name", "last_name", "is_email_verified", "date_joined"]
+        read_only_fields = ["id", "is_email_verified", "date_joined"]

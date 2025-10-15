@@ -12,10 +12,7 @@ class TestVerifyMFAService:
     def setup_method(self):
         self.service = VerifyMFAService()
         self.user = User.objects.create_user(
-            email='test@example.com',
-            password='Password@123',
-            first_name='Test',
-            last_name='User'
+            email="test@example.com", password="Password@123", first_name="Test", last_name="User"
         )
 
     def test_verify_mfa_success(self):
@@ -36,9 +33,9 @@ class TestVerifyMFAService:
         secret = pyotp.random_base32()
         MFASecret.objects.create(user=self.user, secret=secret)
 
-        with pytest.raises(ValidationError, match='Invalid MFA code'):
-            self.service.verify_mfa(self.user, '000000')
+        with pytest.raises(ValidationError, match="Invalid MFA code"):
+            self.service.verify_mfa(self.user, "000000")
 
     def test_verify_mfa_no_secret(self):
-        with pytest.raises(ValidationError, match='MFA not enabled'):
-            self.service.verify_mfa(self.user, '123456')
+        with pytest.raises(ValidationError, match="MFA not enabled"):
+            self.service.verify_mfa(self.user, "123456")

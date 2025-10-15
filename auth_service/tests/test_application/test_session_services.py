@@ -12,32 +12,23 @@ from domain.user_model import User
 class TestSessionServices:
     def setup_method(self):
         self.user = User.objects.create_user(
-            email='test@example.com',
-            password='Password@123',
-            first_name='Test',
-            last_name='User'
+            email="test@example.com", password="Password@123", first_name="Test", last_name="User"
         )
 
     def test_create_session(self):
         service = CreateSessionService()
         session = service.execute(
-            user=self.user,
-            ip_address='192.168.1.1',
-            user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/91.0'
+            user=self.user, ip_address="192.168.1.1", user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/91.0"
         )
 
         assert session.user == self.user
-        assert session.ip_address == '192.168.1.1'
+        assert session.ip_address == "192.168.1.1"
         assert session.is_active is True
 
     def test_list_sessions(self):
         # Create multiple sessions
         for i in range(3):
-            Session.objects.create(
-                user=self.user,
-                ip_address=f'192.168.1.{i}',
-                user_agent='Mozilla/5.0'
-            )
+            Session.objects.create(user=self.user, ip_address=f"192.168.1.{i}", user_agent="Mozilla/5.0")
 
         service = ListSessionsService()
         sessions = service.execute(self.user)
@@ -45,11 +36,7 @@ class TestSessionServices:
         assert len(sessions) == 3
 
     def test_revoke_session(self):
-        session = Session.objects.create(
-            user=self.user,
-            ip_address='192.168.1.1',
-            user_agent='Mozilla/5.0'
-        )
+        session = Session.objects.create(user=self.user, ip_address="192.168.1.1", user_agent="Mozilla/5.0")
 
         service = RevokeSessionService()
         result = service.execute(self.user, session.id)
@@ -60,16 +47,9 @@ class TestSessionServices:
 
     def test_revoke_session_not_owned(self):
         other_user = User.objects.create_user(
-            email='other@example.com',
-            password='Password@123',
-            first_name='Other',
-            last_name='User'
+            email="other@example.com", password="Password@123", first_name="Other", last_name="User"
         )
-        session = Session.objects.create(
-            user=other_user,
-            ip_address='192.168.1.1',
-            user_agent='Mozilla/5.0'
-        )
+        session = Session.objects.create(user=other_user, ip_address="192.168.1.1", user_agent="Mozilla/5.0")
 
         service = RevokeSessionService()
         result = service.execute(self.user, session.id)
@@ -79,11 +59,7 @@ class TestSessionServices:
     def test_revoke_all_sessions(self):
         # Create multiple sessions
         for i in range(3):
-            Session.objects.create(
-                user=self.user,
-                ip_address=f'192.168.1.{i}',
-                user_agent='Mozilla/5.0'
-            )
+            Session.objects.create(user=self.user, ip_address=f"192.168.1.{i}", user_agent="Mozilla/5.0")
 
         service = RevokeAllSessionsService()
         count = service.execute(self.user)
@@ -95,11 +71,7 @@ class TestSessionServices:
         # Create multiple sessions
         sessions = []
         for i in range(3):
-            session = Session.objects.create(
-                user=self.user,
-                ip_address=f'192.168.1.{i}',
-                user_agent='Mozilla/5.0'
-            )
+            session = Session.objects.create(user=self.user, ip_address=f"192.168.1.{i}", user_agent="Mozilla/5.0")
             sessions.append(session)
 
         service = RevokeAllSessionsService()

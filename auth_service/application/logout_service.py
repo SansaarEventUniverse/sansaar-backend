@@ -13,13 +13,13 @@ class LogoutService:
         try:
             token = RefreshToken.objects.get(token=refresh_token)
         except RefreshToken.DoesNotExist:
-            raise ValidationError('Invalid refresh token')
+            raise ValidationError("Invalid refresh token")
 
         if token.is_blacklisted:
-            raise ValidationError('Token already blacklisted')
+            raise ValidationError("Token already blacklisted")
 
         if token.is_expired():
-            raise ValidationError('Token has expired')
+            raise ValidationError("Token has expired")
 
         token.blacklist()
 
@@ -29,7 +29,7 @@ class LogoutService:
             user_id=str(token.user.id),
             ip_address=ip_address,
             user_agent=user_agent,
-            metadata={'email': token.user.email}
+            metadata={"email": token.user.email},
         )
 
         return True

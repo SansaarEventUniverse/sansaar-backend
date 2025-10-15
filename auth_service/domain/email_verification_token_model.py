@@ -6,13 +6,13 @@ from django.utils import timezone
 
 
 class EmailVerificationToken(models.Model):
-    user = models.ForeignKey('domain.User', on_delete=models.CASCADE, related_name='verification_tokens')
+    user = models.ForeignKey("domain.User", on_delete=models.CASCADE, related_name="verification_tokens")
     token = models.CharField(max_length=64, unique=True)
     expires_at = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = 'email_verification_tokens'
+        db_table = "email_verification_tokens"
 
     def save(self, *args, **kwargs):
         if not self.token:

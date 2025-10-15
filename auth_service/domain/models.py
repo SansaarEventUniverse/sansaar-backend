@@ -1,3 +1,4 @@
+from .account_deactivation_model import AccountDeactivation
 from .audit_log_model import AuditEventType, AuditLog
 from .backup_code_model import BackupCode
 from .email_verification_token_model import EmailVerificationToken
@@ -11,19 +12,20 @@ from .user_model import User
 from .user_role_model import UserRole
 
 __all__ = [
-    'User',
-    'EmailVerificationToken',
-    'RefreshToken',
-    'PasswordResetToken',
-    'AuditLog',
-    'AuditEventType',
-    'MFASecret',
-    'BackupCode',
-    'PasswordHistory',
-    'PASSWORD_HISTORY_SIZE',
-    'LoginAttempt',
-    'LOCKOUT_THRESHOLD',
-    'LOCKOUT_DURATION',
-    'Session',
-    'UserRole',
+    "User",
+    "EmailVerificationToken",
+    "RefreshToken",
+    "PasswordResetToken",
+    "AuditLog",
+    "AuditEventType",
+    "MFASecret",
+    "BackupCode",
+    "PasswordHistory",
+    "PASSWORD_HISTORY_SIZE",
+    "LoginAttempt",
+    "LOCKOUT_THRESHOLD",
+    "LOCKOUT_DURATION",
+    "Session",
+    "UserRole",
+    "AccountDeactivation",
 ]

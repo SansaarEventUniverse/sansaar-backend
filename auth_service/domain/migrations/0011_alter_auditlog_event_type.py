@@ -4,15 +4,27 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('domain', '0010_session'),
+        ("domain", "0010_session"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='auditlog',
-            name='event_type',
-            field=models.CharField(choices=[('REGISTRATION', 'Registration'), ('LOGIN', 'Login'), ('LOGOUT', 'Logout'), ('EMAIL_VERIFICATION', 'Email Verification'), ('PASSWORD_RESET', 'Password Reset'), ('PASSWORD_CHANGE', 'Password Change'), ('ACCOUNT_LOCKED', 'Account Locked'), ('SESSION_CREATED', 'Session Created'), ('SESSION_REVOKED', 'Session Revoked')], max_length=50),
+            model_name="auditlog",
+            name="event_type",
+            field=models.CharField(
+                choices=[
+                    ("REGISTRATION", "Registration"),
+                    ("LOGIN", "Login"),
+                    ("LOGOUT", "Logout"),
+                    ("EMAIL_VERIFICATION", "Email Verification"),
+                    ("PASSWORD_RESET", "Password Reset"),
+                    ("PASSWORD_CHANGE", "Password Change"),
+                    ("ACCOUNT_LOCKED", "Account Locked"),
+                    ("SESSION_CREATED", "Session Created"),
+                    ("SESSION_REVOKED", "Session Revoked"),
+                ],
+                max_length=50,
+            ),
         ),
     ]

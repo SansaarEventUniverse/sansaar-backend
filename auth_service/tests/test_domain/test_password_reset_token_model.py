@@ -11,10 +11,7 @@ from domain.user_model import User
 class TestPasswordResetToken:
     def test_create_token(self):
         user = User.objects.create_user(
-            email='test@example.com',
-            password='Test@1234',
-            first_name='Test',
-            last_name='User'
+            email="test@example.com", password="Test@1234", first_name="Test", last_name="User"
         )
         token = PasswordResetToken.objects.create(user=user)
 
@@ -24,10 +21,7 @@ class TestPasswordResetToken:
 
     def test_token_expires_in_1_hour(self):
         user = User.objects.create_user(
-            email='test@example.com',
-            password='Test@1234',
-            first_name='Test',
-            last_name='User'
+            email="test@example.com", password="Test@1234", first_name="Test", last_name="User"
         )
         token = PasswordResetToken.objects.create(user=user)
 
@@ -36,10 +30,7 @@ class TestPasswordResetToken:
 
     def test_is_expired_method(self):
         user = User.objects.create_user(
-            email='test@example.com',
-            password='Test@1234',
-            first_name='Test',
-            last_name='User'
+            email="test@example.com", password="Test@1234", first_name="Test", last_name="User"
         )
         token = PasswordResetToken.objects.create(user=user)
 
@@ -51,10 +42,7 @@ class TestPasswordResetToken:
 
     def test_token_str_representation(self):
         user = User.objects.create_user(
-            email='test@example.com',
-            password='Test@1234',
-            first_name='Test',
-            last_name='User'
+            email="test@example.com", password="Test@1234", first_name="Test", last_name="User"
         )
         token = PasswordResetToken.objects.create(user=user)
 

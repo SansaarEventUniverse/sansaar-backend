@@ -17,23 +17,19 @@ class EventPublisher:
     def publish_user_registered(self, user_data):
         try:
             credentials = pika.PlainCredentials(self.user, self.password)
-            parameters = pika.ConnectionParameters(
-                host=self.host,
-                port=self.port,
-                credentials=credentials
-            )
+            parameters = pika.ConnectionParameters(host=self.host, port=self.port, credentials=credentials)
 
             connection = pika.BlockingConnection(parameters)
             channel = connection.channel()
 
-            channel.exchange_declare(exchange='auth_events', exchange_type='topic', durable=True)
+            channel.exchange_declare(exchange="auth_events", exchange_type="topic", durable=True)
 
             message = json.dumps(user_data)
             channel.basic_publish(
-                exchange='auth_events',
-                routing_key='user.registered',
+                exchange="auth_events",
+                routing_key="user.registered",
                 body=message,
-                properties=pika.BasicProperties(delivery_mode=2)
+                properties=pika.BasicProperties(delivery_mode=2),
             )
 
             connection.close()

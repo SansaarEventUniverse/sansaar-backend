@@ -9,18 +9,11 @@ from domain.user_model import User
 class TestLoginAttemptModel:
     def setup_method(self):
         self.user = User.objects.create_user(
-            email='test@example.com',
-            password='Password@123',
-            first_name='Test',
-            last_name='User'
+            email="test@example.com", password="Password@123", first_name="Test", last_name="User"
         )
 
     def test_create_login_attempt(self):
-        attempt = LoginAttempt.objects.create(
-            user=self.user,
-            ip_address='192.168.1.1',
-            success=False
-        )
+        attempt = LoginAttempt.objects.create(user=self.user, ip_address="192.168.1.1", success=False)
 
         assert attempt.user == self.user
         assert attempt.success is False
@@ -34,22 +27,14 @@ class TestLoginAttemptModel:
     def test_user_is_locked_out(self):
         # Create 5 failed attempts within lockout window
         for _ in range(5):
-            LoginAttempt.objects.create(
-                user=self.user,
-                ip_address='192.168.1.1',
-                success=False
-            )
+            LoginAttempt.objects.create(user=self.user, ip_address="192.168.1.1", success=False)
 
         assert self.user.is_locked_out() is True
 
     def test_user_not_locked_out_with_fewer_attempts(self):
         # Create only 3 failed attempts
         for _ in range(3):
-            LoginAttempt.objects.create(
-                user=self.user,
-                ip_address='192.168.1.1',
-                success=False
-            )
+            LoginAttempt.objects.create(user=self.user, ip_address="192.168.1.1", success=False)
 
         assert self.user.is_locked_out() is False
 
@@ -57,11 +42,7 @@ class TestLoginAttemptModel:
         # Create 5 failed attempts but old
         old_time = timezone.now() - timezone.timedelta(minutes=20)
         for _ in range(5):
-            attempt = LoginAttempt.objects.create(
-                user=self.user,
-                ip_address='192.168.1.1',
-                success=False
-            )
+            attempt = LoginAttempt.objects.create(user=self.user, ip_address="192.168.1.1", success=False)
             attempt.created_at = old_time
             attempt.save()
 
@@ -70,11 +51,7 @@ class TestLoginAttemptModel:
     def test_reset_login_attempts(self):
         # Create failed attempts
         for _ in range(3):
-            LoginAttempt.objects.create(
-                user=self.user,
-                ip_address='192.168.1.1',
-                success=False
-            )
+            LoginAttempt.objects.create(user=self.user, ip_address="192.168.1.1", success=False)
 
         self.user.reset_login_attempts()
 

@@ -23,17 +23,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', cast=bool)
+DEBUG = config("DEBUG", cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv())
 
 # Sentry Configuration
 sentry_sdk.init(
-    dsn=config('SENTRY_DSN'),
-    environment=config('SENTRY_ENVIRONMENT'),
+    dsn=config("SENTRY_DSN"),
+    environment=config("SENTRY_ENVIRONMENT"),
     traces_sample_rate=1.0 if DEBUG else 0.1,
     profiles_sample_rate=1.0 if DEBUG else 0.1,
 )
@@ -43,72 +43,70 @@ sentry_sdk.init(
 
 INSTALLED_APPS = [
     # Django apps
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django.contrib.sites',
-
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "django.contrib.sites",
     # Third-party apps
-    'rest_framework',
-    'corsheaders',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
-
+    "rest_framework",
+    "corsheaders",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
     # Local apps
-    'domain',
-    'application',
-    'infrastructure',
-    'presentation',
+    "domain",
+    "application",
+    "infrastructure",
+    "presentation",
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'allauth.account.middleware.AccountMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
-ROOT_URLCONF = 'auth_service.urls'
+ROOT_URLCONF = "auth_service.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'auth_service.wsgi.application'
+WSGI_APPLICATION = "auth_service.wsgi.application"
 
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT'),
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": config("DB_NAME"),
+        "USER": config("DB_USER"),
+        "PASSWORD": config("DB_PASSWORD"),
+        "HOST": config("DB_HOST"),
+        "PORT": config("DB_PORT"),
     }
 }
 
@@ -118,16 +116,16 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
@@ -135,9 +133,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 
@@ -147,28 +145,28 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = "static/"
 
 # Redis Configuration
-REDIS_HOST = config('REDIS_HOST')
-REDIS_PORT = config('REDIS_PORT', cast=int)
-REDIS_DB = config('REDIS_DB', cast=int)
+REDIS_HOST = config("REDIS_HOST")
+REDIS_PORT = config("REDIS_PORT", cast=int)
+REDIS_DB = config("REDIS_DB", cast=int)
 
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}',
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}",
     }
 }
 
 # AWS SES Configuration
-AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
-AWS_REGION = config('AWS_REGION')
-AWS_SES_FROM_EMAIL = config('AWS_SES_FROM_EMAIL')
+AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY")
+AWS_REGION = config("AWS_REGION")
+AWS_SES_FROM_EMAIL = config("AWS_SES_FROM_EMAIL")
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = f'email-smtp.{AWS_REGION}.amazonaws.com'
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = f"email-smtp.{AWS_REGION}.amazonaws.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = AWS_ACCESS_KEY_ID
@@ -176,78 +174,78 @@ EMAIL_HOST_PASSWORD = AWS_SECRET_ACCESS_KEY
 DEFAULT_FROM_EMAIL = AWS_SES_FROM_EMAIL
 
 # SendGrid Configuration
-SENDGRID_API_KEY = config('SENDGRID_API_KEY')
-SENDGRID_FROM_EMAIL = config('SENDGRID_FROM_EMAIL')
-SENDGRID_VERIFICATION_TEMPLATE_ID = config('SENDGRID_VERIFICATION_TEMPLATE_ID')
-SENDGRID_PASSWORD_RESET_TEMPLATE_ID = config('SENDGRID_PASSWORD_RESET_TEMPLATE_ID')
+SENDGRID_API_KEY = config("SENDGRID_API_KEY")
+SENDGRID_FROM_EMAIL = config("SENDGRID_FROM_EMAIL")
+SENDGRID_VERIFICATION_TEMPLATE_ID = config("SENDGRID_VERIFICATION_TEMPLATE_ID")
+SENDGRID_PASSWORD_RESET_TEMPLATE_ID = config("SENDGRID_PASSWORD_RESET_TEMPLATE_ID")
 
 # JWT Configuration
-JWT_SECRET_KEY = config('JWT_SECRET_KEY')
-JWT_ACCESS_TOKEN_LIFETIME = config('JWT_ACCESS_TOKEN_LIFETIME', cast=int)
-JWT_REFRESH_TOKEN_LIFETIME = config('JWT_REFRESH_TOKEN_LIFETIME', cast=int)
+JWT_SECRET_KEY = config("JWT_SECRET_KEY")
+JWT_ACCESS_TOKEN_LIFETIME = config("JWT_ACCESS_TOKEN_LIFETIME", cast=int)
+JWT_REFRESH_TOKEN_LIFETIME = config("JWT_REFRESH_TOKEN_LIFETIME", cast=int)
 
 # Celery Configuration
-CELERY_BROKER_URL = config('CELERY_BROKER_URL')
-CELERY_RESULT_BACKEND = config('CELERY_RESULT_BACKEND')
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'UTC'
+CELERY_BROKER_URL = config("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = config("CELERY_RESULT_BACKEND")
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TIMEZONE = "UTC"
 
 # RabbitMQ Configuration
-RABBITMQ_HOST = config('RABBITMQ_HOST')
-RABBITMQ_PORT = config('RABBITMQ_PORT', cast=int)
-RABBITMQ_USER = config('RABBITMQ_USER')
-RABBITMQ_PASSWORD = config('RABBITMQ_PASSWORD')
+RABBITMQ_HOST = config("RABBITMQ_HOST")
+RABBITMQ_PORT = config("RABBITMQ_PORT", cast=int)
+RABBITMQ_USER = config("RABBITMQ_USER")
+RABBITMQ_PASSWORD = config("RABBITMQ_PASSWORD")
 
 # Django Allauth Configuration
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
 ]
 
 SITE_ID = 1
 
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
-ACCOUNT_LOGIN_METHODS = {'email'}
-ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_LOGIN_METHODS = {"email"}
+ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
+ACCOUNT_EMAIL_VERIFICATION = "none"
 
 SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'APP': {
-            'client_id': config('GOOGLE_CLIENT_ID'),
-            'secret': config('GOOGLE_CLIENT_SECRET'),
+    "google": {
+        "APP": {
+            "client_id": config("GOOGLE_CLIENT_ID"),
+            "secret": config("GOOGLE_CLIENT_SECRET"),
         },
-        'SCOPE': ['profile', 'email'],
-        'AUTH_PARAMS': {'access_type': 'online'},
-        'ADAPTER': 'infrastructure.oauth.google_adapter.GoogleOAuthAdapter',
+        "SCOPE": ["profile", "email"],
+        "AUTH_PARAMS": {"access_type": "online"},
+        "ADAPTER": "infrastructure.oauth.google_adapter.GoogleOAuthAdapter",
     }
 }
 
 SOCIALACCOUNT_AUTO_SIGNUP = True
-SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
+SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
 
 # REST Framework Configuration
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'infrastructure.authentication.jwt_authentication.JWTAuthentication',
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "infrastructure.authentication.jwt_authentication.JWTAuthentication",
     ],
-    'DEFAULT_PERMISSION_CLASSES': [],
-    'DEFAULT_RENDERER_CLASSES': [
-        'rest_framework.renderers.JSONRenderer',
+    "DEFAULT_PERMISSION_CLASSES": [],
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
     ],
 }
 
 # CORS Configuration
 CORS_ALLOW_ALL_ORIGINS = DEBUG
-CORS_ALLOWED_ORIGINS = [] if DEBUG else config('CORS_ALLOWED_ORIGINS', cast=Csv())
+CORS_ALLOWED_ORIGINS = [] if DEBUG else config("CORS_ALLOWED_ORIGINS", cast=Csv())
 
 # Frontend URL
-FRONTEND_URL = config('FRONTEND_URL')
+FRONTEND_URL = config("FRONTEND_URL")
 
 # Custom User Model
-AUTH_USER_MODEL = 'domain.User'
+AUTH_USER_MODEL = "domain.User"
 
 # Default primary key field type
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

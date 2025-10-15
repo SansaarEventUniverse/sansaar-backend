@@ -16,15 +16,9 @@ class EmailService:
         try:
             verification_url = f"{settings.FRONTEND_URL}/verify-email?token={verification_token}"
 
-            message = Mail(
-                from_email=self.from_email,
-                to_emails=to_email
-            )
+            message = Mail(from_email=self.from_email, to_emails=to_email)
             message.template_id = settings.SENDGRID_VERIFICATION_TEMPLATE_ID
-            message.dynamic_template_data = {
-                'first_name': first_name,
-                'verification_url': verification_url
-            }
+            message.dynamic_template_data = {"first_name": first_name, "verification_url": verification_url}
 
             response = self.client.send(message)
             return response.status_code == 202
@@ -36,15 +30,9 @@ class EmailService:
         try:
             reset_url = f"{settings.FRONTEND_URL}/reset-password?token={reset_token}"
 
-            message = Mail(
-                from_email=self.from_email,
-                to_emails=to_email
-            )
+            message = Mail(from_email=self.from_email, to_emails=to_email)
             message.template_id = settings.SENDGRID_PASSWORD_RESET_TEMPLATE_ID
-            message.dynamic_template_data = {
-                'first_name': first_name,
-                'reset_url': reset_url
-            }
+            message.dynamic_template_data = {"first_name": first_name, "reset_url": reset_url}
 
             response = self.client.send(message)
             return response.status_code == 202

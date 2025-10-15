@@ -6,7 +6,7 @@ from django.utils import timezone
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
-            raise ValueError('Email is required')
+            raise ValueError("Email is required")
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
@@ -14,9 +14,9 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password=None, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
-        extra_fields.setdefault('is_email_verified', True)
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+        extra_fields.setdefault("is_email_verified", True)
         return self.create_user(email, password, **extra_fields)
 
 
@@ -31,41 +31,38 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name']
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["first_name", "last_name"]
 
     class Meta:
-        db_table = 'users'
+        db_table = "users"
 
     def __str__(self):
         return self.email
 
     def verify_email(self):
         self.is_email_verified = True
-        self.save(update_fields=['is_email_verified'])
+        self.save(update_fields=["is_email_verified"])
 
     def activate(self):
         self.is_active = True
-        self.save(update_fields=['is_active'])
+        self.save(update_fields=["is_active"])
 
     def deactivate(self):
         self.is_active = False
-        self.save(update_fields=['is_active'])
+        self.save(update_fields=["is_active"])
 
     def has_mfa_enabled(self):
-        return hasattr(self, 'mfa_secret') and self.mfa_secret.is_verified
+        return hasattr(self, "mfa_secret") and self.mfa_secret.is_verified
 
     def is_locked_out(self):
         """Check if user is locked out due to failed login attempts"""
         from django.utils import timezone
         from domain.login_attempt_model import LOCKOUT_THRESHOLD, LOCKOUT_DURATION
-        
+
         cutoff_time = timezone.now() - timezone.timedelta(minutes=LOCKOUT_DURATION)
-        recent_failed_attempts = self.login_attempts.filter(
-            success=False,
-            created_at__gte=cutoff_time
-        ).count()
-        
+        recent_failed_attempts = self.login_attempts.filter(success=False, created_at__gte=cutoff_time).count()
+
         return recent_failed_attempts >= LOCKOUT_THRESHOLD
 
     def reset_login_attempts(self):
@@ -85,6 +82,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     def check_password_hash(self, password, password_hash):
         """Check if password matches the given hash"""
         from django.contrib.auth.hashers import check_password
+
         return check_password(password, password_hash)
 
     def add_password_to_history(self, password_hash):

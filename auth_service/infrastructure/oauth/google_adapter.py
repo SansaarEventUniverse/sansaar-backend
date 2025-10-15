@@ -10,7 +10,7 @@ class GoogleOAuthAdapter(DefaultSocialAccountAdapter):
             return
 
         # Auto-verify email for OAuth users
-        if sociallogin.account.provider == 'google':
+        if sociallogin.account.provider == "google":
             user = sociallogin.user
             user.is_email_verified = True
 
@@ -25,6 +25,6 @@ class GoogleOAuthAdapter(DefaultSocialAccountAdapter):
         """Generate JWT tokens for OAuth user"""
         jwt_service = JWTService()
         return {
-            'access_token': jwt_service.generate_access_token(user),
-            'refresh_token': jwt_service.generate_refresh_token(user)
+            "access_token": jwt_service.generate_access_token(user),
+            "refresh_token": jwt_service.generate_refresh_token(user),
         }

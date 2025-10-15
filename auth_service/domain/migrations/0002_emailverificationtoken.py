@@ -6,23 +6,29 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('domain', '0001_initial'),
+        ("domain", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='EmailVerificationToken',
+            name="EmailVerificationToken",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('token', models.CharField(max_length=64, unique=True)),
-                ('expires_at', models.DateTimeField()),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='verification_tokens', to=settings.AUTH_USER_MODEL)),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("token", models.CharField(max_length=64, unique=True)),
+                ("expires_at", models.DateTimeField()),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="verification_tokens",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'db_table': 'email_verification_tokens',
+                "db_table": "email_verification_tokens",
             },
         ),
     ]

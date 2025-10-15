@@ -26,7 +26,7 @@ from presentation.serializers.auth_serializers import (
 )
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 @permission_classes([AllowAny])
 def register(request):
     serializer = RegisterUserSerializer(data=request.data)
@@ -38,17 +38,16 @@ def register(request):
         user = service.register(serializer.validated_data)
 
         user_serializer = UserSerializer(user)
-        return Response({
-            'message': 'User registered successfully',
-            'user': user_serializer.data
-        }, status=status.HTTP_201_CREATED)
+        return Response(
+            {"message": "User registered successfully", "user": user_serializer.data}, status=status.HTTP_201_CREATED
+        )
     except ValidationError as e:
-        return Response({'non_field_errors': [str(e.message)]}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"non_field_errors": [str(e.message)]}, status=status.HTTP_400_BAD_REQUEST)
     except Exception:
-        return Response({'error': 'Registration failed'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({"error": "Registration failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 @permission_classes([AllowAny])
 def login(request):
     serializer = LoginSerializer(data=request.data)
@@ -56,39 +55,42 @@ def login(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     service = LoginService()
-    
+
     # Get client IP
-    ip_address = request.META.get('REMOTE_ADDR')
-    user_agent = request.META.get('HTTP_USER_AGENT', '')
-    
+    ip_address = request.META.get("REMOTE_ADDR")
+    user_agent = request.META.get("HTTP_USER_AGENT", "")
+
     result = service.execute(
-        serializer.validated_data['email'],
-        serializer.validated_data['password'],
-        mfa_code=serializer.validated_data.get('mfa_code'),
+        serializer.validated_data["email"],
+        serializer.validated_data["password"],
+        mfa_code=serializer.validated_data.get("mfa_code"),
         ip_address=ip_address,
-        user_agent=user_agent
+        user_agent=user_agent,
     )
-    
-    if not result.get('success'):
-        error = result.get('error', 'Login failed')
+
+    if not result.get("success"):
+        error = result.get("error", "Login failed")
         # Return 429 for locked accounts
-        if 'locked' in error.lower():
-            return Response({'error': error}, status=status.HTTP_429_TOO_MANY_REQUESTS)
-        return Response({'error': error}, status=status.HTTP_401_UNAUTHORIZED)
-    
+        if "locked" in error.lower():
+            return Response({"error": error}, status=status.HTTP_429_TOO_MANY_REQUESTS)
+        return Response({"error": error}, status=status.HTTP_401_UNAUTHORIZED)
+
     # Handle MFA required
-    if result.get('mfa_required'):
-        return Response({'mfa_required': True, 'user_id': result['user_id']}, status=status.HTTP_200_OK)
-    
-    return Response({
-        'access_token': result['access_token'],
-        'refresh_token': result['refresh_token'],
-        'session_id': result['session_id'],
-        'user': result['user']
-    }, status=status.HTTP_200_OK)
+    if result.get("mfa_required"):
+        return Response({"mfa_required": True, "user_id": result["user_id"]}, status=status.HTTP_200_OK)
+
+    return Response(
+        {
+            "access_token": result["access_token"],
+            "refresh_token": result["refresh_token"],
+            "session_id": result["session_id"],
+            "user": result["user"],
+        },
+        status=status.HTTP_200_OK,
+    )
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 @permission_classes([AllowAny])
 def request_password_reset(request):
     serializer = RequestPasswordResetSerializer(data=request.data)
@@ -97,13 +99,13 @@ def request_password_reset(request):
 
     try:
         service = RequestPasswordResetService()
-        service.request_reset(serializer.validated_data['email'])
-        return Response({'message': 'Password reset email sent'}, status=status.HTTP_200_OK)
+        service.request_reset(serializer.validated_data["email"])
+        return Response({"message": "Password reset email sent"}, status=status.HTTP_200_OK)
     except Exception:
-        return Response({'error': 'Failed to send password reset email'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({"error": "Failed to send password reset email"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 @permission_classes([AllowAny])
 def reset_password(request):
     serializer = ResetPasswordSerializer(data=request.data)
@@ -112,62 +114,62 @@ def reset_password(request):
 
     try:
         service = ResetPasswordService()
-        service.reset_password(
-            serializer.validated_data['token'],
-            serializer.validated_data['new_password']
-        )
-        return Response({'message': 'Password reset successfully'}, status=status.HTTP_200_OK)
+        service.reset_password(serializer.validated_data["token"], serializer.validated_data["new_password"])
+        return Response({"message": "Password reset successfully"}, status=status.HTTP_200_OK)
     except ValidationError as e:
-        return Response({'error': str(e.message)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"error": str(e.message)}, status=status.HTTP_400_BAD_REQUEST)
     except Exception:
-        return Response({'error': 'Password reset failed'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({"error": "Password reset failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 @permission_classes([AllowAny])
 def google_callback(request):
     try:
         # Get user from social account
-        uid = request.GET.get('uid')
+        uid = request.GET.get("uid")
         if not uid:
-            return Response({'error': 'Missing uid parameter'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Missing uid parameter"}, status=status.HTTP_400_BAD_REQUEST)
 
-        social_account = SocialAccount.objects.get(provider='google', uid=uid)
+        social_account = SocialAccount.objects.get(provider="google", uid=uid)
         user = social_account.user
 
         # Generate JWT tokens
         adapter = GoogleOAuthAdapter()
         tokens = adapter.generate_tokens(user)
 
-        return Response({
-            **tokens,
-            'user': {
-                'id': user.id,
-                'email': user.email,
-                'first_name': user.first_name,
-                'last_name': user.last_name
-            }
-        }, status=status.HTTP_200_OK)
+        return Response(
+            {
+                **tokens,
+                "user": {
+                    "id": user.id,
+                    "email": user.email,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                },
+            },
+            status=status.HTTP_200_OK,
+        )
     except SocialAccount.DoesNotExist:
-        return Response({'error': 'Social account not found'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"error": "Social account not found"}, status=status.HTTP_404_NOT_FOUND)
     except Exception:
-        return Response({'error': 'OAuth callback failed'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({"error": "OAuth callback failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 @permission_classes([AllowAny])
 def verify_email(request, token):
     try:
         service = VerifyEmailService()
         service.verify(token)
-        return Response({'message': 'Email verified successfully'}, status=status.HTTP_200_OK)
+        return Response({"message": "Email verified successfully"}, status=status.HTTP_200_OK)
     except ValidationError as e:
-        return Response({'error': str(e.message)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"error": str(e.message)}, status=status.HTTP_400_BAD_REQUEST)
     except Exception:
-        return Response({'error': 'Verification failed'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({"error": "Verification failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 @permission_classes([AllowAny])
 def resend_verification(request):
     serializer = ResendVerificationSerializer(data=request.data)
@@ -176,15 +178,15 @@ def resend_verification(request):
 
     try:
         service = ResendVerificationService()
-        service.resend(serializer.validated_data['email'])
-        return Response({'message': 'Verification email sent successfully'}, status=status.HTTP_200_OK)
+        service.resend(serializer.validated_data["email"])
+        return Response({"message": "Verification email sent successfully"}, status=status.HTTP_200_OK)
     except ValidationError as e:
-        return Response({'error': str(e.message)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"error": str(e.message)}, status=status.HTTP_400_BAD_REQUEST)
     except Exception:
-        return Response({'error': 'Failed to send verification email'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({"error": "Failed to send verification email"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def change_password(request):
     serializer = ChangePasswordSerializer(data=request.data)
@@ -195,17 +197,17 @@ def change_password(request):
         service = ChangePasswordService()
         service.change_password(
             user=request.user,
-            current_password=serializer.validated_data['current_password'],
-            new_password=serializer.validated_data['new_password']
+            current_password=serializer.validated_data["current_password"],
+            new_password=serializer.validated_data["new_password"],
         )
-        return Response({'message': 'Password changed successfully'}, status=status.HTTP_200_OK)
+        return Response({"message": "Password changed successfully"}, status=status.HTTP_200_OK)
     except ValidationError as e:
-        return Response({'error': str(e.message)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"error": str(e.message)}, status=status.HTTP_400_BAD_REQUEST)
     except Exception:
-        return Response({'error': 'Password change failed'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({"error": "Password change failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 @permission_classes([AllowAny])
 def logout(request):
     serializer = LogoutSerializer(data=request.data)
@@ -214,10 +216,9 @@ def logout(request):
 
     try:
         service = LogoutService()
-        service.logout(serializer.validated_data['refresh_token'])
-        return Response({'message': 'Logged out successfully'}, status=status.HTTP_200_OK)
+        service.logout(serializer.validated_data["refresh_token"])
+        return Response({"message": "Logged out successfully"}, status=status.HTTP_200_OK)
     except ValidationError as e:
-        return Response({'error': str(e.message)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"error": str(e.message)}, status=status.HTTP_400_BAD_REQUEST)
     except Exception:
-        return Response({'error': 'Logout failed'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+        return Response({"error": "Logout failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

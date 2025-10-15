@@ -9,5 +9,5 @@ class LogAuditEventService:
             ip_address=ip_address,
             user_agent=user_agent,
             success=success,
-            metadata=metadata or {}
+            metadata=metadata or {},
         )

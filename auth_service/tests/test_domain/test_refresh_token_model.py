@@ -11,10 +11,7 @@ from domain.user_model import User
 class TestRefreshToken:
     def test_create_refresh_token(self):
         user = User.objects.create_user(
-            email='test@example.com',
-            password='Test@1234',
-            first_name='Test',
-            last_name='User'
+            email="test@example.com", password="Test@1234", first_name="Test", last_name="User"
         )
         token = RefreshToken.objects.create(user=user)
 
@@ -25,10 +22,7 @@ class TestRefreshToken:
 
     def test_token_expires_in_7_days(self):
         user = User.objects.create_user(
-            email='test@example.com',
-            password='Test@1234',
-            first_name='Test',
-            last_name='User'
+            email="test@example.com", password="Test@1234", first_name="Test", last_name="User"
         )
         token = RefreshToken.objects.create(user=user)
 
@@ -37,10 +31,7 @@ class TestRefreshToken:
 
     def test_is_expired_method(self):
         user = User.objects.create_user(
-            email='test@example.com',
-            password='Test@1234',
-            first_name='Test',
-            last_name='User'
+            email="test@example.com", password="Test@1234", first_name="Test", last_name="User"
         )
         token = RefreshToken.objects.create(user=user)
 
@@ -52,10 +43,7 @@ class TestRefreshToken:
 
     def test_blacklist_method(self):
         user = User.objects.create_user(
-            email='test@example.com',
-            password='Test@1234',
-            first_name='Test',
-            last_name='User'
+            email="test@example.com", password="Test@1234", first_name="Test", last_name="User"
         )
         token = RefreshToken.objects.create(user=user)
 
@@ -65,10 +53,7 @@ class TestRefreshToken:
 
     def test_token_str_representation(self):
         user = User.objects.create_user(
-            email='test@example.com',
-            password='Test@1234',
-            first_name='Test',
-            last_name='User'
+            email="test@example.com", password="Test@1234", first_name="Test", last_name="User"
         )
         token = RefreshToken.objects.create(user=user)
 

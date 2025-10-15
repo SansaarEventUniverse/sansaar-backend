@@ -11,10 +11,7 @@ class TestJWTPerformance:
     def setup_method(self):
         self.jwt_service = JWTService()
         self.user = User.objects.create_user(
-            email='test@example.com',
-            password='Password@123',
-            first_name='Test',
-            last_name='User'
+            email="test@example.com", password="Password@123", first_name="Test", last_name="User"
         )
 
     def test_token_generation_performance(self):
@@ -45,10 +42,7 @@ class TestJWTPerformance:
 
         for i in range(10):
             User.objects.create_user(
-                email=f'user{i}@example.com',
-                password='Password@123',
-                first_name='Test',
-                last_name='User'
+                email=f"user{i}@example.com", password="Password@123", first_name="Test", last_name="User"
             )
 
         elapsed_time = time.time() - start_time

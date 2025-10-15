@@ -6,39 +6,52 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('domain', '0005_auditlog'),
+        ("domain", "0005_auditlog"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='MFASecret',
+            name="MFASecret",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('secret', models.CharField(max_length=32)),
-                ('is_verified', models.BooleanField(default=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('verified_at', models.DateTimeField(blank=True, null=True)),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='mfa_secret', to=settings.AUTH_USER_MODEL)),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("secret", models.CharField(max_length=32)),
+                ("is_verified", models.BooleanField(default=False)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("verified_at", models.DateTimeField(blank=True, null=True)),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="mfa_secret",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'db_table': 'mfa_secrets',
+                "db_table": "mfa_secrets",
             },
         ),
         migrations.CreateModel(
-            name='BackupCode',
+            name="BackupCode",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('code', models.CharField(max_length=20, unique=True)),
-                ('is_used', models.BooleanField(default=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('used_at', models.DateTimeField(blank=True, null=True)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='backup_codes', to=settings.AUTH_USER_MODEL)),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("code", models.CharField(max_length=20, unique=True)),
+                ("is_used", models.BooleanField(default=False)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("used_at", models.DateTimeField(blank=True, null=True)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="backup_codes",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'db_table': 'backup_codes',
-                'indexes': [models.Index(fields=['user', 'is_used'], name='backup_code_user_id_07fbaf_idx')],
+                "db_table": "backup_codes",
+                "indexes": [models.Index(fields=["user", "is_used"], name="backup_code_user_id_07fbaf_idx")],
             },
         ),
     ]

@@ -12,14 +12,14 @@ class RevokeSessionService:
         try:
             session = Session.objects.get(id=session_id, user=user, is_active=True)
             session.revoke()
-            
+
             # Log session revocation
             self.audit_service.log_event(
                 event_type=AuditEventType.SESSION_REVOKED,
                 user_id=str(user.id),
-                metadata={'session_id': str(session.id)}
+                metadata={"session_id": str(session.id)},
             )
-            
+
             return True
         except Session.DoesNotExist:
             return False
