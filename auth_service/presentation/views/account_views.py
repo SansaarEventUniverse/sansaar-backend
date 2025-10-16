@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
+from application.anonymize_account_service import AnonymizeUserDataService
 from application.deactivate_account_service import DeactivateAccountService
 from application.delete_account_service import DeleteAccountService
 from application.reactivate_account_service import ReactivateAccountService
@@ -40,4 +41,28 @@ def delete_account(request, user_id):
         result = service.delete(user_id)
         return Response(result, status=status.HTTP_200_OK)
     except ValueError as e:
+        return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def anonymize_account(request, user_id):
+    try:
+        service = AnonymizeUserDataService()
+        result = service.anonymize(user_id)
+        return Response(result, status=status.HTTP_200_OK)
+    except ValueError as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def verify_anonymization(request, user_id):
+    try:
+        service = AnonymizeUserDataService()
+        result = service.verify_anonymization(user_id)
+        return Response(result, status=status.HTTP_200_OK)
+    except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)

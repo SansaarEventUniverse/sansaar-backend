@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views.account_views import deactivate_account, delete_account, reactivate_account
+from .views.account_views import anonymize_account, deactivate_account, delete_account, reactivate_account, verify_anonymization
 from .views.auth_views import (
     change_password,
     google_callback,
@@ -36,4 +36,6 @@ urlpatterns = [
     path("account/<str:user_id>/deactivate/", deactivate_account, name="deactivate_account"),
     path("account/<str:user_id>/reactivate/", reactivate_account, name="reactivate_account"),
     path("account/<str:user_id>/delete/", delete_account, name="delete_account"),
+    path("account/<str:user_id>/anonymize/", anonymize_account, name="anonymize_account"),
+    path("account/<str:user_id>/verify-anonymization/", verify_anonymization, name="verify_anonymization"),
 ]
