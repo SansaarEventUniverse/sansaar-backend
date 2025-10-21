@@ -203,6 +203,71 @@ class EventModelTest(TestCase):
         )
         event.soft_delete()
         self.assertIsNotNone(event.deleted_at)
+    
+    def test_is_multi_day(self):
+        """Test multi-day event detection."""
+        event = Event.objects.create(
+            title="Test Event",
+            description="Test Description",
+            organizer_id=self.organizer_id,
+            start_datetime=self.now + timedelta(days=1),
+            end_datetime=self.now + timedelta(days=3),
+            venue_id=self.venue_id,
+        )
+        self.assertTrue(event.is_multi_day())
+        
+    def test_is_not_multi_day(self):
+        """Test single-day event detection."""
+        start = self.now.replace(hour=10, minute=0, second=0, microsecond=0)
+        end = self.now.replace(hour=18, minute=0, second=0, microsecond=0)
+        event = Event.objects.create(
+            title="Test Event",
+            description="Test Description",
+            organizer_id=self.organizer_id,
+            start_datetime=start,
+            end_datetime=end,
+            venue_id=self.venue_id,
+        )
+        self.assertFalse(event.is_multi_day())
+        
+    def test_duration_days(self):
+        """Test event duration calculation."""
+        event = Event.objects.create(
+            title="Test Event",
+            description="Test Description",
+            organizer_id=self.organizer_id,
+            start_datetime=self.now + timedelta(days=1),
+            end_datetime=self.now + timedelta(days=3),
+            venue_id=self.venue_id,
+        )
+        self.assertEqual(event.duration_days(), 3)
+        
+    def test_validate_timezone(self):
+        """Test timezone validation."""
+        event = Event.objects.create(
+            title="Test Event",
+            description="Test Description",
+            organizer_id=self.organizer_id,
+            start_datetime=self.now + timedelta(days=1),
+            end_datetime=self.now + timedelta(days=2),
+            venue_id=self.venue_id,
+            timezone='America/New_York',
+        )
+        self.assertTrue(event.validate_timezone())
+        
+    def test_invalid_timezone(self):
+        """Test invalid timezone validation."""
+        event = Event.objects.create(
+            title="Test Event",
+            description="Test Description",
+            organizer_id=self.organizer_id,
+            start_datetime=self.now + timedelta(days=1),
+            end_datetime=self.now + timedelta(days=2),
+            venue_id=self.venue_id,
+            timezone='Invalid/Timezone',
+        )
+        with self.assertRaises(ValidationError):
+            event.validate_timezone()
 
 
 class EventDraftModelTest(TestCase):

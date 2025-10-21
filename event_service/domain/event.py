@@ -121,6 +121,23 @@ class Event(models.Model):
         now = timezone.now()
         return self.start_datetime <= now <= self.end_datetime
     
+    def is_multi_day(self):
+        """Check if event spans multiple days."""
+        return self.start_datetime.date() != self.end_datetime.date()
+    
+    def duration_days(self):
+        """Get event duration in days."""
+        return (self.end_datetime.date() - self.start_datetime.date()).days + 1
+    
+    def validate_timezone(self):
+        """Validate timezone is valid."""
+        import pytz
+        try:
+            pytz.timezone(self.timezone)
+            return True
+        except pytz.exceptions.UnknownTimeZoneError:
+            raise ValidationError({'timezone': f'Invalid timezone: {self.timezone}'})
+    
     def soft_delete(self):
         """Soft delete the event."""
         self.deleted_at = timezone.now()
