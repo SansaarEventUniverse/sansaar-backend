@@ -98,6 +98,34 @@ class EventModelTest(TestCase):
         )
         with self.assertRaises(ValidationError):
             event.publish()
+    
+    def test_unpublish_event(self):
+        """Test unpublishing an event."""
+        event = Event.objects.create(
+            title="Test Event",
+            description="Test Description",
+            organizer_id=self.organizer_id,
+            start_datetime=self.now + timedelta(days=1),
+            end_datetime=self.now + timedelta(days=2),
+            venue_id=self.venue_id,
+            status='published',
+        )
+        event.unpublish()
+        self.assertEqual(event.status, 'draft')
+    
+    def test_cannot_unpublish_non_published(self):
+        """Test cannot unpublish non-published event."""
+        event = Event.objects.create(
+            title="Test Event",
+            description="Test Description",
+            organizer_id=self.organizer_id,
+            start_datetime=self.now + timedelta(days=1),
+            end_datetime=self.now + timedelta(days=2),
+            venue_id=self.venue_id,
+            status='draft',
+        )
+        with self.assertRaises(ValidationError):
+            event.unpublish()
             
     def test_cancel_event(self):
         """Test cancelling an event."""

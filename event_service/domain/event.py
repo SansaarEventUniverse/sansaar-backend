@@ -85,6 +85,13 @@ class Event(models.Model):
         self.status = 'published'
         self.save()
     
+    def unpublish(self):
+        """Unpublish the event back to draft."""
+        if self.status != 'published':
+            raise ValidationError('Only published events can be unpublished')
+        self.status = 'draft'
+        self.save()
+    
     def cancel(self):
         """Cancel the event."""
         if self.status in ['completed', 'cancelled']:

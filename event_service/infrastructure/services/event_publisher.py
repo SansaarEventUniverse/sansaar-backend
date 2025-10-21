@@ -62,11 +62,28 @@ class EventPublisher:
             'event_id': str(event.id),
             'organizer_id': str(event.organizer_id),
             'title': event.title,
+            'start_datetime': event.start_datetime.isoformat(),
+        })
+    
+    def publish_event_unpublished(self, event: Event):
+        """Publish event.unpublished event."""
+        self._publish('event.unpublished', {
+            'event_id': str(event.id),
+            'organizer_id': str(event.organizer_id),
+            'title': event.title,
         })
     
     def publish_event_cancelled(self, event: Event):
         """Publish event.cancelled event."""
         self._publish('event.cancelled', {
+            'event_id': str(event.id),
+            'organizer_id': str(event.organizer_id),
+            'title': event.title,
+        })
+    
+    def publish_event_completed(self, event: Event):
+        """Publish event.completed event."""
+        self._publish('event.completed', {
             'event_id': str(event.id),
             'organizer_id': str(event.organizer_id),
             'title': event.title,
