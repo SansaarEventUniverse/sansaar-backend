@@ -14,11 +14,17 @@ from presentation.views.event_status_views import (
     cancel_event,
     complete_event,
 )
+from presentation.views.datetime_views import (
+    export_ical,
+    list_timezones,
+)
 
 urlpatterns = [
     path('health/', health_check, name='health_check'),
+    path('timezones/', list_timezones, name='list_timezones'),
     path('drafts/get/', get_draft, name='get_draft'),
     path('drafts/', save_draft, name='save_draft'),
+    path('<str:event_id>/ical/', export_ical, name='export_ical'),
     path('<str:event_id>/publish/', publish_event, name='publish_event'),
     path('<str:event_id>/unpublish/', unpublish_event, name='unpublish_event'),
     path('<str:event_id>/cancel/', cancel_event, name='cancel_event'),
