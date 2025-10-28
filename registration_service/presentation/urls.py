@@ -17,6 +17,11 @@ from presentation.views.capacity_views import (
     get_capacity,
     create_capacity_rule,
 )
+from presentation.views.form_views import (
+    create_form,
+    get_form,
+    submit_form,
+)
 
 urlpatterns = [
     path('health/', health_check, name='health_check'),
@@ -30,4 +35,7 @@ urlpatterns = [
     path('events/<str:event_id>/waitlist/leave/', leave_waitlist, name='leave_waitlist'),
     path('events/<str:event_id>/waitlist/position/', get_waitlist_position, name='get_waitlist_position'),
     path('events/<str:event_id>/waitlist/list/', get_event_waitlist, name='get_event_waitlist'),
+    path('events/<str:event_id>/form/', create_form, name='create_form'),
+    path('events/<str:event_id>/form/get/', get_form, name='get_form'),
+    path('events/<str:event_id>/form/submit/', submit_form, name='submit_form'),
 ]
