@@ -12,10 +12,18 @@ class CreateGroupRegistrationService:
     
     def execute(self, data: Dict[str, Any]) -> GroupRegistration:
         """Create a group registration."""
+        event_id = data['event_id']
+        if isinstance(event_id, str):
+            event_id = uuid.UUID(event_id)
+        
+        leader_id = data['group_leader_id']
+        if isinstance(leader_id, str):
+            leader_id = uuid.UUID(leader_id)
+        
         group = GroupRegistration(
-            event_id=uuid.UUID(data['event_id']),
+            event_id=event_id,
             group_name=data['group_name'],
-            group_leader_id=uuid.UUID(data['group_leader_id']),
+            group_leader_id=leader_id,
             group_leader_email=data['group_leader_email'],
             min_size=data.get('min_size', 2),
             max_size=data['max_size'],
@@ -37,15 +45,15 @@ class AddGroupMemberService:
         except GroupRegistration.DoesNotExist:
             raise ValidationError('Group not found')
         
-        if group.is_full():
-            raise ValidationError('Group is full')
-        
         if group.status == 'cancelled':
             raise ValidationError('Cannot join cancelled group')
         
-        # Check duplicate
+        # Check duplicate first
         if GroupMember.objects.filter(group=group, user_id=user_id).exists():
             raise ValidationError('User already in group')
+        
+        if group.is_full():
+            raise ValidationError('Group is full')
         
         member = GroupMember.objects.create(
             group=group,
