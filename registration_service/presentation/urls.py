@@ -22,6 +22,14 @@ from presentation.views.form_views import (
     get_form,
     submit_form,
 )
+from presentation.views.group_views import (
+    create_group,
+    join_group,
+    get_group,
+    confirm_group,
+    cancel_group,
+    get_group_stats,
+)
 
 urlpatterns = [
     path('health/', health_check, name='health_check'),
@@ -38,4 +46,10 @@ urlpatterns = [
     path('events/<str:event_id>/form/', create_form, name='create_form'),
     path('events/<str:event_id>/form/get/', get_form, name='get_form'),
     path('events/<str:event_id>/form/submit/', submit_form, name='submit_form'),
+    path('events/<str:event_id>/groups/stats/', get_group_stats, name='get_group_stats'),
+    path('events/<str:event_id>/groups/', create_group, name='create_group'),
+    path('events/<str:event_id>/groups/<str:group_id>/', get_group, name='get_group'),
+    path('events/<str:event_id>/groups/<str:group_id>/join/', join_group, name='join_group'),
+    path('events/<str:event_id>/groups/<str:group_id>/confirm/', confirm_group, name='confirm_group'),
+    path('events/<str:event_id>/groups/<str:group_id>/cancel/', cancel_group, name='cancel_group'),
 ]
