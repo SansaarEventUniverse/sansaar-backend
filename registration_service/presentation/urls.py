@@ -30,6 +30,11 @@ from presentation.views.group_views import (
     cancel_group,
     get_group_stats,
 )
+from presentation.views.analytics_views import (
+    get_analytics,
+    get_dashboard,
+    export_analytics,
+)
 
 urlpatterns = [
     path('health/', health_check, name='health_check'),
@@ -52,4 +57,7 @@ urlpatterns = [
     path('events/<str:event_id>/groups/<str:group_id>/join/', join_group, name='join_group'),
     path('events/<str:event_id>/groups/<str:group_id>/confirm/', confirm_group, name='confirm_group'),
     path('events/<str:event_id>/groups/<str:group_id>/cancel/', cancel_group, name='cancel_group'),
+    path('events/<str:event_id>/analytics/', get_analytics, name='get_analytics'),
+    path('events/<str:event_id>/analytics/dashboard/', get_dashboard, name='get_dashboard'),
+    path('events/<str:event_id>/analytics/export/', export_analytics, name='export_analytics'),
 ]
