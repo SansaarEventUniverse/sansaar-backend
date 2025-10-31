@@ -3,6 +3,7 @@ from .waitlist import Waitlist
 from .capacity_rule import CapacityRule
 from .registration_form import RegistrationForm, CustomField
 from .group_registration import GroupRegistration, GroupMember
+from .analytics import RegistrationAnalytics
 
 __all__ = [
     "Registration",
@@ -12,4 +13,5 @@ __all__ = [
     "CustomField",
     "GroupRegistration",
     "GroupMember",
+    "RegistrationAnalytics",
 ]
