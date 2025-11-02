@@ -18,9 +18,17 @@ from presentation.views.datetime_views import (
     export_ical,
     list_timezones,
 )
+from presentation.views.search_views import (
+    search_events,
+    get_search_filters,
+    get_search_suggestions,
+)
 
 urlpatterns = [
     path('health/', health_check, name='health_check'),
+    path('search/', search_events, name='search_events'),
+    path('search/filters/', get_search_filters, name='get_search_filters'),
+    path('search/suggestions/', get_search_suggestions, name='get_search_suggestions'),
     path('timezones/', list_timezones, name='list_timezones'),
     path('drafts/get/', get_draft, name='get_draft'),
     path('drafts/', save_draft, name='save_draft'),
