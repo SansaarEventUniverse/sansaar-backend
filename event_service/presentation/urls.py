@@ -23,12 +23,24 @@ from presentation.views.search_views import (
     get_search_filters,
     get_search_suggestions,
 )
+from presentation.views.category_views import (
+    manage_categories,
+    get_category_stats,
+    manage_tags,
+    get_tag_suggestions,
+    get_tag_stats,
+)
 
 urlpatterns = [
     path('health/', health_check, name='health_check'),
     path('search/', search_events, name='search_events'),
     path('search/filters/', get_search_filters, name='get_search_filters'),
     path('search/suggestions/', get_search_suggestions, name='get_search_suggestions'),
+    path('categories/', manage_categories, name='manage_categories'),
+    path('categories/stats/', get_category_stats, name='get_category_stats'),
+    path('tags/', manage_tags, name='manage_tags'),
+    path('tags/suggestions/', get_tag_suggestions, name='get_tag_suggestions'),
+    path('tags/stats/', get_tag_stats, name='get_tag_stats'),
     path('timezones/', list_timezones, name='list_timezones'),
     path('drafts/get/', get_draft, name='get_draft'),
     path('drafts/', save_draft, name='save_draft'),
