@@ -30,12 +30,20 @@ from presentation.views.category_views import (
     get_tag_suggestions,
     get_tag_stats,
 )
+from presentation.views.location_views import (
+    search_nearby,
+    search_by_location,
+    get_map_events,
+)
 
 urlpatterns = [
     path('health/', health_check, name='health_check'),
     path('search/', search_events, name='search_events'),
     path('search/filters/', get_search_filters, name='get_search_filters'),
     path('search/suggestions/', get_search_suggestions, name='get_search_suggestions'),
+    path('nearby/', search_nearby, name='search_nearby'),
+    path('search/location/', search_by_location, name='search_by_location'),
+    path('map/', get_map_events, name='get_map_events'),
     path('categories/', manage_categories, name='manage_categories'),
     path('categories/stats/', get_category_stats, name='get_category_stats'),
     path('tags/', manage_tags, name='manage_tags'),

@@ -1,6 +1,7 @@
 from .event import Event, EventDraft
 from .search_index import EventSearchIndex
 from .category import Category, Tag
+from .location import LocationSearch, EventLocation
 
 __all__ = [
     "Event",
@@ -8,4 +9,6 @@ __all__ = [
     "EventSearchIndex",
     "Category",
     "Tag",
+    "LocationSearch",
+    "EventLocation",
 ]
