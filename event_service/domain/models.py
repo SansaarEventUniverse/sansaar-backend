@@ -2,6 +2,7 @@ from .event import Event, EventDraft
 from .search_index import EventSearchIndex
 from .category import Category, Tag
 from .location import LocationSearch, EventLocation
+from .recommendation import UserPreference, RecommendationScore
 
 __all__ = [
     "Event",
@@ -11,4 +12,6 @@ __all__ = [
     "Tag",
     "LocationSearch",
     "EventLocation",
+    "UserPreference",
+    "RecommendationScore",
 ]
