@@ -35,6 +35,11 @@ from presentation.views.location_views import (
     search_by_location,
     get_map_events,
 )
+from presentation.views.recommendation_views import (
+    get_recommendations,
+    manage_preferences,
+    get_similar_events,
+)
 
 urlpatterns = [
     path('health/', health_check, name='health_check'),
@@ -44,6 +49,9 @@ urlpatterns = [
     path('nearby/', search_nearby, name='search_nearby'),
     path('search/location/', search_by_location, name='search_by_location'),
     path('map/', get_map_events, name='get_map_events'),
+    path('recommendations/', get_recommendations, name='get_recommendations'),
+    path('users/<str:user_id>/preferences/', manage_preferences, name='manage_preferences'),
+    path('<str:event_id>/similar/', get_similar_events, name='get_similar_events'),
     path('categories/', manage_categories, name='manage_categories'),
     path('categories/stats/', get_category_stats, name='get_category_stats'),
     path('tags/', manage_tags, name='manage_tags'),
