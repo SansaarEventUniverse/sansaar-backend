@@ -40,12 +40,20 @@ from presentation.views.recommendation_views import (
     manage_preferences,
     get_similar_events,
 )
+from presentation.views.search_analytics_views import (
+    get_search_analytics,
+    get_search_performance,
+    get_popular_searches,
+)
 
 urlpatterns = [
     path('health/', health_check, name='health_check'),
     path('search/', search_events, name='search_events'),
     path('search/filters/', get_search_filters, name='get_search_filters'),
     path('search/suggestions/', get_search_suggestions, name='get_search_suggestions'),
+    path('search/analytics/', get_search_analytics, name='get_search_analytics'),
+    path('search/performance/', get_search_performance, name='get_search_performance'),
+    path('search/popular/', get_popular_searches, name='get_popular_searches'),
     path('nearby/', search_nearby, name='search_nearby'),
     path('search/location/', search_by_location, name='search_by_location'),
     path('map/', get_map_events, name='get_map_events'),
