@@ -47,5 +47,9 @@ class SearchCacheService:
     
     def _generate_key(self, query: str, filters: Dict[str, Any]) -> str:
         """Generate cache key."""
+        import hashlib
         filter_str = json.dumps(filters, sort_keys=True) if filters else ''
-        return f"search:{query}:{filter_str}"
+        # Create a hash to avoid special characters
+        key_content = f"{query}:{filter_str}"
+        key_hash = hashlib.md5(key_content.encode()).hexdigest()
+        return f"search_{key_hash}"
