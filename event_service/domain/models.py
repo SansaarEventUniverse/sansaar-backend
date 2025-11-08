@@ -4,6 +4,7 @@ from .category import Category, Tag
 from .location import LocationSearch, EventLocation
 from .recommendation import UserPreference, RecommendationScore
 from .search_analytics import SearchQuery, SearchAnalytics
+from .media import MediaGallery, MediaItem
 
 __all__ = [
     "Event",
@@ -17,4 +18,6 @@ __all__ = [
     "RecommendationScore",
     "SearchQuery",
     "SearchAnalytics",
+    "MediaGallery",
+    "MediaItem",
 ]
