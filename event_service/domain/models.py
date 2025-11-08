@@ -5,6 +5,7 @@ from .location import LocationSearch, EventLocation
 from .recommendation import UserPreference, RecommendationScore
 from .search_analytics import SearchQuery, SearchAnalytics
 from .media import MediaGallery, MediaItem
+from .document import Document
 
 __all__ = [
     "Event",
@@ -20,4 +21,5 @@ __all__ = [
     "SearchAnalytics",
     "MediaGallery",
     "MediaItem",
+    "Document",
 ]
