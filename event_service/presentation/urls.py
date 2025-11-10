@@ -50,6 +50,12 @@ from presentation.views.media_views import (
     get_media_gallery,
     delete_media,
 )
+from presentation.views.document_views import (
+    upload_document,
+    get_documents,
+    download_document,
+    delete_document,
+)
 
 urlpatterns = [
     path('health/', health_check, name='health_check'),
@@ -68,6 +74,10 @@ urlpatterns = [
     path('<str:event_id>/media/', upload_media, name='upload_media'),
     path('<str:event_id>/media/gallery/', get_media_gallery, name='get_media_gallery'),
     path('<str:event_id>/media/<str:media_id>/', delete_media, name='delete_media'),
+    path('<str:event_id>/documents/', upload_document, name='upload_document'),
+    path('<str:event_id>/documents/list/', get_documents, name='get_documents'),
+    path('<str:event_id>/documents/<str:document_id>/', download_document, name='download_document'),
+    path('<str:event_id>/documents/<str:document_id>/delete/', delete_document, name='delete_document'),
     path('categories/', manage_categories, name='manage_categories'),
     path('categories/stats/', get_category_stats, name='get_category_stats'),
     path('tags/', manage_tags, name='manage_tags'),
