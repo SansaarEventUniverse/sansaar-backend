@@ -6,6 +6,7 @@ from .recommendation import UserPreference, RecommendationScore
 from .search_analytics import SearchQuery, SearchAnalytics
 from .media import MediaGallery, MediaItem
 from .document import Document
+from .calendar import CalendarEvent
 
 __all__ = [
     "Event",
@@ -22,4 +23,5 @@ __all__ = [
     "MediaGallery",
     "MediaItem",
     "Document",
+    "CalendarEvent",
 ]
