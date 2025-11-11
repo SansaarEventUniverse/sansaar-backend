@@ -56,6 +56,12 @@ from presentation.views.document_views import (
     download_document,
     delete_document,
 )
+from presentation.views.calendar_views import (
+    export_to_calendar,
+    sync_calendar,
+    calendar_webhook,
+    get_calendar_syncs,
+)
 
 urlpatterns = [
     path('health/', health_check, name='health_check'),
@@ -78,6 +84,10 @@ urlpatterns = [
     path('<str:event_id>/documents/list/', get_documents, name='get_documents'),
     path('<str:event_id>/documents/<str:document_id>/', download_document, name='download_document'),
     path('<str:event_id>/documents/<str:document_id>/delete/', delete_document, name='delete_document'),
+    path('<str:event_id>/calendar/export/', export_to_calendar, name='export_to_calendar'),
+    path('<str:event_id>/calendar/sync/', sync_calendar, name='sync_calendar'),
+    path('<str:event_id>/calendar/syncs/', get_calendar_syncs, name='get_calendar_syncs'),
+    path('calendar/webhook/', calendar_webhook, name='calendar_webhook'),
     path('categories/', manage_categories, name='manage_categories'),
     path('categories/stats/', get_category_stats, name='get_category_stats'),
     path('tags/', manage_tags, name='manage_tags'),
