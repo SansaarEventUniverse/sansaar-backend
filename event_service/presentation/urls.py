@@ -62,6 +62,15 @@ from presentation.views.calendar_views import (
     calendar_webhook,
     get_calendar_syncs,
 )
+from presentation.views.template_views import (
+    create_template,
+    get_templates,
+    get_template,
+    apply_template,
+    update_template,
+    delete_template,
+    clone_template,
+)
 
 urlpatterns = [
     path('health/', health_check, name='health_check'),
@@ -87,7 +96,14 @@ urlpatterns = [
     path('<str:event_id>/calendar/export/', export_to_calendar, name='export_to_calendar'),
     path('<str:event_id>/calendar/sync/', sync_calendar, name='sync_calendar'),
     path('<str:event_id>/calendar/syncs/', get_calendar_syncs, name='get_calendar_syncs'),
+    path('<str:event_id>/apply-template/', apply_template, name='apply_template'),
     path('calendar/webhook/', calendar_webhook, name='calendar_webhook'),
+    path('templates/', create_template, name='create_template'),
+    path('templates/list/', get_templates, name='get_templates'),
+    path('templates/<str:template_id>/', get_template, name='get_template'),
+    path('templates/<str:template_id>/update/', update_template, name='update_template'),
+    path('templates/<str:template_id>/delete/', delete_template, name='delete_template'),
+    path('templates/<str:template_id>/clone/', clone_template, name='clone_template'),
     path('categories/', manage_categories, name='manage_categories'),
     path('categories/stats/', get_category_stats, name='get_category_stats'),
     path('tags/', manage_tags, name='manage_tags'),
