@@ -8,6 +8,7 @@ from .media import MediaGallery, MediaItem
 from .document import Document
 from .calendar import CalendarEvent
 from .template import EventTemplate
+from .clone import EventClone
 
 __all__ = [
     "Event",
@@ -26,4 +27,5 @@ __all__ = [
     "Document",
     "CalendarEvent",
     "EventTemplate",
+    "EventClone",
 ]
