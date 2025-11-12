@@ -71,6 +71,13 @@ from presentation.views.template_views import (
     delete_template,
     clone_template,
 )
+from presentation.views.clone_views import (
+    clone_event,
+    bulk_clone,
+    clone_series,
+    get_clones,
+    get_clone_info,
+)
 
 urlpatterns = [
     path('health/', health_check, name='health_check'),
@@ -104,6 +111,11 @@ urlpatterns = [
     path('templates/<str:template_id>/update/', update_template, name='update_template'),
     path('templates/<str:template_id>/delete/', delete_template, name='delete_template'),
     path('templates/<str:template_id>/clone/', clone_template, name='clone_template'),
+    path('bulk-clone/', bulk_clone, name='bulk_clone'),
+    path('<str:event_id>/clone/', clone_event, name='clone_event'),
+    path('<str:event_id>/clone-series/', clone_series, name='clone_series'),
+    path('<str:event_id>/clones/', get_clones, name='get_clones'),
+    path('<str:event_id>/clone-info/', get_clone_info, name='get_clone_info'),
     path('categories/', manage_categories, name='manage_categories'),
     path('categories/stats/', get_category_stats, name='get_category_stats'),
     path('tags/', manage_tags, name='manage_tags'),
