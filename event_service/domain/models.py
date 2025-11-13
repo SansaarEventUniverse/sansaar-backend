@@ -7,6 +7,7 @@ from .search_analytics import SearchQuery, SearchAnalytics
 from .media import MediaGallery, MediaItem
 from .document import Document
 from .calendar import CalendarEvent
+from .template import EventTemplate
 
 __all__ = [
     "Event",
@@ -24,4 +25,5 @@ __all__ = [
     "MediaItem",
     "Document",
     "CalendarEvent",
+    "EventTemplate",
 ]
