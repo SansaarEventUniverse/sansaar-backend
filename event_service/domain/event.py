@@ -121,6 +121,34 @@ class Event(models.Model):
         now = timezone.now()
         return self.start_datetime <= now <= self.end_datetime
     
+    def can_clone(self) -> bool:
+        """Check if event can be cloned."""
+        return self.deleted_at is None
+    
+    def clone_event(self, cloned_by: uuid.UUID, customizations: dict = None) -> 'Event':
+        """Clone this event with optional customizations."""
+        if not self.can_clone():
+            raise ValidationError("Cannot clone deleted event")
+        
+        customizations = customizations or {}
+        cloned = Event.objects.create(
+            title=customizations.get('title', f"{self.title} (Copy)"),
+            description=customizations.get('description', self.description),
+            status='draft',
+            visibility=customizations.get('visibility', self.visibility),
+            organizer_id=cloned_by,
+            organization_id=customizations.get('organization_id', self.organization_id),
+            start_datetime=customizations.get('start_datetime', self.start_datetime),
+            end_datetime=customizations.get('end_datetime', self.end_datetime),
+            timezone=customizations.get('timezone', self.timezone),
+            is_all_day=customizations.get('is_all_day', self.is_all_day),
+            venue_id=customizations.get('venue_id', self.venue_id),
+            is_online=customizations.get('is_online', self.is_online),
+            online_url=customizations.get('online_url', self.online_url),
+            max_attendees=customizations.get('max_attendees', self.max_attendees),
+        )
+        return cloned
+    
     def is_multi_day(self):
         """Check if event spans multiple days."""
         return self.start_datetime.date() != self.end_datetime.date()
