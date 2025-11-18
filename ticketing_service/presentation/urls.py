@@ -10,6 +10,11 @@ from presentation.views.ticket_views import (
     check_in_ticket,
     get_ticket,
 )
+from presentation.views.order_views import (
+    CreateOrderView,
+    ProcessPurchaseView,
+    GetOrderView
+)
 
 urlpatterns = [
     path('health/', health_check, name='health_check'),
@@ -19,4 +24,10 @@ urlpatterns = [
     path('tickets/validate/', validate_qr_code, name='validate_qr_code'),
     path('tickets/<str:ticket_id>/checkin/', check_in_ticket, name='check_in_ticket'),
     path('tickets/<str:ticket_id>/', get_ticket, name='get_ticket'),
+    
+    # Order endpoints
+    path('orders/', CreateOrderView.as_view(), name='create-order'),
+    path('orders/<str:order_id>/', GetOrderView.as_view(), name='get-order'),
+    path('orders/<str:order_id>/purchase/', ProcessPurchaseView.as_view(), name='process-purchase'),
 ]
+
