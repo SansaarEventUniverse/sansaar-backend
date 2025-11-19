@@ -76,7 +76,7 @@ class Payment(models.Model):
     
     def can_refund(self) -> bool:
         """Check if payment can be refunded."""
-        return self.status == 'completed' and self.refund_amount < self.amount
+        return self.status in ['completed', 'partially_refunded'] and self.refund_amount < self.amount
     
     def process(self, transaction_id: str, response: dict) -> None:
         """Mark payment as processing."""
