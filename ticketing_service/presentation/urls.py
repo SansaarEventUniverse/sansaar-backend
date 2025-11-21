@@ -20,6 +20,11 @@ from presentation.views.promo_code_views import (
     ValidatePromoCodeView,
     ApplyPromoCodeView
 )
+from presentation.views.refund_views import (
+    RequestRefundView,
+    ProcessRefundView,
+    GetRefundStatusView
+)
 
 urlpatterns = [
     path('health/', health_check, name='health_check'),
@@ -39,5 +44,10 @@ urlpatterns = [
     path('events/<str:event_id>/promo-codes/', CreatePromoCodeView.as_view(), name='create-promo-code'),
     path('promo-codes/validate/', ValidatePromoCodeView.as_view(), name='validate-promo-code'),
     path('orders/<str:order_id>/apply-promo/', ApplyPromoCodeView.as_view(), name='apply-promo-code'),
+    
+    # Refund endpoints
+    path('refunds/request/', RequestRefundView.as_view(), name='request-refund'),
+    path('refunds/<str:refund_id>/process/', ProcessRefundView.as_view(), name='process-refund'),
+    path('refunds/<str:refund_id>/', GetRefundStatusView.as_view(), name='get-refund-status'),
 ]
 
