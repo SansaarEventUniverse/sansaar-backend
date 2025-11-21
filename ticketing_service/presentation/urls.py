@@ -15,6 +15,11 @@ from presentation.views.order_views import (
     ProcessPurchaseView,
     GetOrderView
 )
+from presentation.views.promo_code_views import (
+    CreatePromoCodeView,
+    ValidatePromoCodeView,
+    ApplyPromoCodeView
+)
 
 urlpatterns = [
     path('health/', health_check, name='health_check'),
@@ -29,5 +34,10 @@ urlpatterns = [
     path('orders/', CreateOrderView.as_view(), name='create-order'),
     path('orders/<str:order_id>/', GetOrderView.as_view(), name='get-order'),
     path('orders/<str:order_id>/purchase/', ProcessPurchaseView.as_view(), name='process-purchase'),
+    
+    # Promo code endpoints
+    path('events/<str:event_id>/promo-codes/', CreatePromoCodeView.as_view(), name='create-promo-code'),
+    path('promo-codes/validate/', ValidatePromoCodeView.as_view(), name='validate-promo-code'),
+    path('orders/<str:order_id>/apply-promo/', ApplyPromoCodeView.as_view(), name='apply-promo-code'),
 ]
 
