@@ -25,6 +25,11 @@ from presentation.views.refund_views import (
     ProcessRefundView,
     GetRefundStatusView
 )
+from presentation.views.revenue_views import (
+    GetRevenueView,
+    GenerateReportView,
+    ProcessPayoutView
+)
 
 urlpatterns = [
     path('health/', health_check, name='health_check'),
@@ -49,5 +54,10 @@ urlpatterns = [
     path('refunds/request/', RequestRefundView.as_view(), name='request-refund'),
     path('refunds/<str:refund_id>/process/', ProcessRefundView.as_view(), name='process-refund'),
     path('refunds/<str:refund_id>/', GetRefundStatusView.as_view(), name='get-refund-status'),
+    
+    # Revenue endpoints
+    path('events/<str:event_id>/revenue/', GetRevenueView.as_view(), name='get-revenue'),
+    path('events/<str:event_id>/revenue/report/', GenerateReportView.as_view(), name='generate-report'),
+    path('events/<str:event_id>/payout/', ProcessPayoutView.as_view(), name='process-payout'),
 ]
 
