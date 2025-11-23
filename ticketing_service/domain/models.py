@@ -4,3 +4,4 @@ from domain.order import Order, OrderItem
 from domain.promo_code import PromoCode
 from domain.refund import Refund, RefundPolicy
 from domain.revenue import Revenue, RevenueReport
+from domain.tax import TaxRule, TaxCalculation
