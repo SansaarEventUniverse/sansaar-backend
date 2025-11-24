@@ -30,6 +30,11 @@ from presentation.views.revenue_views import (
     GenerateReportView,
     ProcessPayoutView
 )
+from presentation.views.tax_views import (
+    CalculateTaxView,
+    GetTaxReportView,
+    TaxComplianceView
+)
 
 urlpatterns = [
     path('health/', health_check, name='health_check'),
@@ -59,5 +64,10 @@ urlpatterns = [
     path('events/<str:event_id>/revenue/', GetRevenueView.as_view(), name='get-revenue'),
     path('events/<str:event_id>/revenue/report/', GenerateReportView.as_view(), name='generate-report'),
     path('events/<str:event_id>/payout/', ProcessPayoutView.as_view(), name='process-payout'),
+    
+    # Tax endpoints
+    path('orders/<str:order_id>/calculate-tax/', CalculateTaxView.as_view(), name='calculate-tax'),
+    path('events/<str:event_id>/tax-report/', GetTaxReportView.as_view(), name='get-tax-report'),
+    path('events/<str:event_id>/tax-compliance/', TaxComplianceView.as_view(), name='tax-compliance'),
 ]
 
