@@ -35,6 +35,11 @@ from presentation.views.tax_views import (
     GetTaxReportView,
     TaxComplianceView
 )
+from presentation.views.fraud_views import (
+    FraudAlertView,
+    SecurityReportView,
+    RiskAssessmentView
+)
 
 urlpatterns = [
     path('health/', health_check, name='health_check'),
@@ -69,5 +74,10 @@ urlpatterns = [
     path('orders/<str:order_id>/calculate-tax/', CalculateTaxView.as_view(), name='calculate-tax'),
     path('events/<str:event_id>/tax-report/', GetTaxReportView.as_view(), name='get-tax-report'),
     path('events/<str:event_id>/tax-compliance/', TaxComplianceView.as_view(), name='tax-compliance'),
+    
+    # Fraud detection endpoints
+    path('fraud/alerts/', FraudAlertView.as_view(), name='fraud-alerts'),
+    path('security/report/', SecurityReportView.as_view(), name='security-report'),
+    path('orders/<str:order_id>/risk-assessment/', RiskAssessmentView.as_view(), name='risk-assessment'),
 ]
 
