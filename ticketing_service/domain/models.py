@@ -6,3 +6,4 @@ from domain.refund import Refund, RefundPolicy
 from domain.revenue import Revenue, RevenueReport
 from domain.tax import TaxRule, TaxCalculation
 from domain.fraud import SecurityRule, FraudAlert
+from domain.offline import OfflineTicket, ValidationCache
