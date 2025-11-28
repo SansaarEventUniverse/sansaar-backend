@@ -40,6 +40,11 @@ from presentation.views.fraud_views import (
     SecurityReportView,
     RiskAssessmentView
 )
+from presentation.views.offline_views import (
+    validate_offline,
+    sync_ticket_data,
+    offline_status
+)
 
 urlpatterns = [
     path('health/', health_check, name='health_check'),
@@ -79,5 +84,10 @@ urlpatterns = [
     path('fraud/alerts/', FraudAlertView.as_view(), name='fraud-alerts'),
     path('security/report/', SecurityReportView.as_view(), name='security-report'),
     path('orders/<str:order_id>/risk-assessment/', RiskAssessmentView.as_view(), name='risk-assessment'),
+    
+    # Offline validation endpoints
+    path('validate-offline/', validate_offline, name='validate-offline'),
+    path('sync/', sync_ticket_data, name='sync-ticket-data'),
+    path('events/<uuid:event_id>/offline-status/', offline_status, name='offline-status'),
 ]
 
