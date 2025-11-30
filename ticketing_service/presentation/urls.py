@@ -45,6 +45,11 @@ from presentation.views.offline_views import (
     sync_ticket_data,
     offline_status
 )
+from presentation.views.group_booking_views import (
+    create_group_booking,
+    join_group_booking,
+    process_group_payment
+)
 
 urlpatterns = [
     path('health/', health_check, name='health_check'),
@@ -89,5 +94,10 @@ urlpatterns = [
     path('validate-offline/', validate_offline, name='validate-offline'),
     path('sync/', sync_ticket_data, name='sync-ticket-data'),
     path('events/<uuid:event_id>/offline-status/', offline_status, name='offline-status'),
+    
+    # Group booking endpoints
+    path('events/<uuid:event_id>/group-booking/', create_group_booking, name='create-group-booking'),
+    path('group-bookings/<uuid:booking_id>/join/', join_group_booking, name='join-group-booking'),
+    path('group-bookings/<uuid:booking_id>/payment/', process_group_payment, name='process-group-payment'),
 ]
 
