@@ -50,6 +50,11 @@ from presentation.views.group_booking_views import (
     join_group_booking,
     process_group_payment
 )
+from presentation.views.analytics_views import (
+    GetAnalyticsView,
+    SalesReportView,
+    BusinessIntelligenceView
+)
 
 urlpatterns = [
     path('health/', health_check, name='health_check'),
@@ -99,5 +104,10 @@ urlpatterns = [
     path('events/<uuid:event_id>/group-booking/', create_group_booking, name='create-group-booking'),
     path('group-bookings/<uuid:booking_id>/join/', join_group_booking, name='join-group-booking'),
     path('group-bookings/<uuid:booking_id>/payment/', process_group_payment, name='process-group-payment'),
+    
+    # Analytics endpoints
+    path('events/<uuid:event_id>/ticket-analytics/', GetAnalyticsView.as_view(), name='get-analytics'),
+    path('events/<uuid:event_id>/sales-report/', SalesReportView.as_view(), name='sales-report'),
+    path('events/<uuid:event_id>/business-intelligence/', BusinessIntelligenceView.as_view(), name='business-intelligence'),
 ]
 
