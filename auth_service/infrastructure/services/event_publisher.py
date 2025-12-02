@@ -33,9 +33,10 @@ class EventPublisher:
             )
 
             connection.close()
+            logger.info(f"Successfully published user registered event for user {user_data.get('user_id')}")
             return True
         except Exception as e:
-            logger.error(f"Failed to publish user registered event: {str(e)}")
+            logger.error(f"Failed to publish user registered event: {str(e)}", exc_info=True)
             return False
 
     def publish_account_anonymized(self, event_data):

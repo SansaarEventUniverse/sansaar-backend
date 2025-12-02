@@ -140,12 +140,15 @@ REDIS_HOST = config("REDIS_HOST")
 REDIS_PORT = config("REDIS_PORT", cast=int)
 
 # Celery Configuration
-CELERY_BROKER_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
+CELERY_BROKER_URL = f"amqp://{config('RABBITMQ_USER')}:{config('RABBITMQ_PASSWORD')}@{config('RABBITMQ_HOST')}:{config('RABBITMQ_PORT')}//"
 CELERY_RESULT_BACKEND = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = "UTC"
+CELERY_TASK_ROUTES = {
+    "application.tasks.create_user_profile": {"queue": "user_registered"},
+}
 
 # RabbitMQ Configuration
 RABBITMQ_HOST = config("RABBITMQ_HOST")

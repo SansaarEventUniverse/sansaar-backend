@@ -13,7 +13,16 @@ class RabbitMQConsumer:
             pika.ConnectionParameters(host=settings.RABBITMQ_HOST, port=settings.RABBITMQ_PORT, credentials=credentials)
         )
         self.channel = self.connection.channel()
+        
+        # Declare exchange
+        self.channel.exchange_declare(exchange="auth_events", exchange_type="topic", durable=True)
+        
+        # Declare queue
         self.channel.queue_declare(queue="user_registered", durable=True)
+        
+        # Bind queue to exchange with routing key
+        self.channel.queue_bind(exchange="auth_events", queue="user_registered", routing_key="user.registered")
+        
         self.handler = UserRegisteredEventHandler()
 
     def callback(self, ch, method, properties, body):

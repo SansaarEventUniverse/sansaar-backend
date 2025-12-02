@@ -10,12 +10,14 @@ from domain.user_model import User
 from domain.user_role_model import UserRole
 from infrastructure.services.disposable_email_service import DisposableEmailService
 from infrastructure.services.email_service import EmailService
+from infrastructure.services.event_publisher import EventPublisher
 
 
 class RegisterUserService:
     def __init__(self):
         self.disposable_email_service = DisposableEmailService()
         self.audit_service = LogAuditEventService()
+        self.event_publisher = EventPublisher()
 
     def register(self, data, ip_address=None, user_agent=None):
         self._validate_terms(data.get("agree_terms"))
@@ -43,6 +45,16 @@ class RegisterUserService:
         )
 
         delete_unverified_user.apply_async(args=[user.id], countdown=600)
+
+        # Publish user registered event to RabbitMQ
+        self.event_publisher.publish_user_registered(
+            {
+                "user_id": str(user.id),
+                "email": user.email,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+            }
+        )
 
         return user
 
