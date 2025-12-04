@@ -36,7 +36,7 @@ class AssignOrgRoleView(APIView):
             response_serializer = OrgRoleResponseSerializer(role)
             return Response(response_serializer.data, status=status.HTTP_201_CREATED)
         except ValidationError as e:
-            return Response({'error': str(e.messages)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': e.messages if hasattr(e, 'messages') else str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class RevokeOrgRoleView(APIView):
@@ -54,7 +54,7 @@ class RevokeOrgRoleView(APIView):
             
             return Response({'message': 'Role revoked successfully'}, status=status.HTTP_200_OK)
         except ValidationError as e:
-            return Response({'error': str(e.messages)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': e.messages if hasattr(e, 'messages') else str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class TransferOwnershipView(APIView):
@@ -81,7 +81,7 @@ class TransferOwnershipView(APIView):
             response_serializer = OrgRoleResponseSerializer(new_owner)
             return Response(response_serializer.data, status=status.HTTP_200_OK)
         except ValidationError as e:
-            return Response({'error': str(e.messages)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': e.messages if hasattr(e, 'messages') else str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CheckOrgPermissionView(APIView):
