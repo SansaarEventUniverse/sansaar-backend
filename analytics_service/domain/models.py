@@ -62,5 +62,70 @@ class MetricCalculation(models.Model):
         return cls.objects.order_by('-created_at')
 
 
-__all__ = ['AnalyticsEvent', 'MetricCalculation']
+class Dashboard(models.Model):
+    organizer_id = models.CharField(max_length=100)
+    name = models.CharField(max_length=200)
+    layout = models.JSONField(default=dict, blank=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'dashboards'
+        indexes = [
+            models.Index(fields=['organizer_id', 'is_active']),
+        ]
+
+    def clean(self):
+        if not self.organizer_id:
+            raise ValidationError({'organizer_id': 'Organizer ID is required'})
+
+    def activate(self):
+        self.is_active = True
+        self.save(update_fields=['is_active'])
+
+    def deactivate(self):
+        self.is_active = False
+        self.save(update_fields=['is_active'])
+
+    @classmethod
+    def get_active_dashboards(cls, organizer_id):
+        return cls.objects.filter(organizer_id=organizer_id, is_active=True)
+
+
+class DashboardWidget(models.Model):
+    dashboard = models.ForeignKey(Dashboard, on_delete=models.CASCADE, related_name='widgets')
+    widget_type = models.CharField(max_length=50)
+    title = models.CharField(max_length=200)
+    config = models.JSONField(default=dict, blank=True)
+    position = models.IntegerField(default=0)
+    is_visible = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'dashboard_widgets'
+        ordering = ['position']
+        indexes = [
+            models.Index(fields=['dashboard', 'position']),
+        ]
+
+    def clean(self):
+        if not self.widget_type:
+            raise ValidationError({'widget_type': 'Widget type is required'})
+
+    def toggle_visibility(self):
+        self.is_visible = not self.is_visible
+        self.save(update_fields=['is_visible'])
+
+    def update_position(self, new_position):
+        self.position = new_position
+        self.save(update_fields=['position'])
+
+    @classmethod
+    def get_visible_widgets(cls, dashboard):
+        return cls.objects.filter(dashboard=dashboard, is_visible=True)
+
+
+__all__ = ['AnalyticsEvent', 'MetricCalculation', 'Dashboard', 'DashboardWidget']
 
