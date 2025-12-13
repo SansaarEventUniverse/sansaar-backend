@@ -127,5 +127,67 @@ class DashboardWidget(models.Model):
         return cls.objects.filter(dashboard=dashboard, is_visible=True)
 
 
-__all__ = ['AnalyticsEvent', 'MetricCalculation', 'Dashboard', 'DashboardWidget']
+class EventMetrics(models.Model):
+    event_id = models.CharField(max_length=100)
+    total_views = models.IntegerField(default=0)
+    total_registrations = models.IntegerField(default=0)
+    total_attendance = models.IntegerField(default=0)
+    revenue = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'event_metrics'
+        indexes = [
+            models.Index(fields=['event_id']),
+        ]
+
+    def clean(self):
+        if not self.event_id:
+            raise ValidationError({'event_id': 'Event ID is required'})
+
+    def calculate_conversion_rate(self):
+        if self.total_views > 0:
+            return (self.total_registrations / self.total_views) * 100
+        return 0.0
+
+    def calculate_attendance_rate(self):
+        if self.total_registrations > 0:
+            return (self.total_attendance / self.total_registrations) * 100
+        return 0.0
+
+    @classmethod
+    def get_metrics_by_event(cls, event_id):
+        return cls.objects.filter(event_id=event_id).first()
+
+
+class AttendanceAnalytics(models.Model):
+    event_id = models.CharField(max_length=100)
+    user_id = models.CharField(max_length=100)
+    check_in_time = models.DateTimeField()
+    check_out_time = models.DateTimeField(null=True, blank=True)
+    is_checked_in = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'attendance_analytics'
+        indexes = [
+            models.Index(fields=['event_id', 'user_id']),
+        ]
+
+    def clean(self):
+        if not self.event_id:
+            raise ValidationError({'event_id': 'Event ID is required'})
+
+    def check_out(self, check_out_time):
+        self.check_out_time = check_out_time
+        self.is_checked_in = False
+        self.save(update_fields=['check_out_time', 'is_checked_in'])
+
+    @classmethod
+    def get_event_attendance(cls, event_id):
+        return cls.objects.filter(event_id=event_id)
+
+
+__all__ = ['AnalyticsEvent', 'MetricCalculation', 'Dashboard', 'DashboardWidget', 'EventMetrics', 'AttendanceAnalytics']
 
