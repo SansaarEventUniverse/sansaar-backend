@@ -189,5 +189,54 @@ class AttendanceAnalytics(models.Model):
         return cls.objects.filter(event_id=event_id)
 
 
-__all__ = ['AnalyticsEvent', 'MetricCalculation', 'Dashboard', 'DashboardWidget', 'EventMetrics', 'AttendanceAnalytics']
+class FinancialReport(models.Model):
+    event_id = models.CharField(max_length=100)
+    total_revenue = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    total_expenses = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    net_profit = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'financial_reports'
+
+    def clean(self):
+        if not self.event_id:
+            raise ValidationError({'event_id': 'Event ID is required'})
+
+    def save(self, *args, **kwargs):
+        self.net_profit = self.total_revenue - self.total_expenses
+        super().save(*args, **kwargs)
+
+    def calculate_profit_margin(self):
+        if self.total_revenue > 0:
+            return float((self.net_profit / self.total_revenue) * 100)
+        return 0.0
+
+
+class RevenueAnalytics(models.Model):
+    event_id = models.CharField(max_length=100)
+    ticket_revenue = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    sponsorship_revenue = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    total_revenue = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'revenue_analytics'
+
+    def save(self, *args, **kwargs):
+        self.total_revenue = self.ticket_revenue + self.sponsorship_revenue
+        super().save(*args, **kwargs)
+
+    def calculate_revenue_breakdown(self):
+        if self.total_revenue > 0:
+            return {
+                'ticket_percentage': float((self.ticket_revenue / self.total_revenue) * 100),
+                'sponsorship_percentage': float((self.sponsorship_revenue / self.total_revenue) * 100)
+            }
+        return {'ticket_percentage': 0.0, 'sponsorship_percentage': 0.0}
+
+
+__all__ = ['AnalyticsEvent', 'MetricCalculation', 'Dashboard', 'DashboardWidget', 'EventMetrics', 'AttendanceAnalytics', 'FinancialReport', 'RevenueAnalytics']
 
