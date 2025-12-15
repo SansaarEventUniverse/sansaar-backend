@@ -8,6 +8,7 @@ from presentation.views.event_analytics_views import (
 from presentation.views.financial_views import (
     GetFinancialReportView, RevenueAnalyticsView, ExportFinancialView, ExportFinancialCSVView
 )
+from presentation.views.user_views import UserAnalyticsAPI, UserActivityAPI, UsersListAPI
 
 urlpatterns = [
     # Health Check
@@ -39,4 +40,9 @@ urlpatterns = [
     path('organizer/dashboard/<int:dashboard_id>/', get_dashboard, name='get_dashboard'),
     path('organizer/dashboard/<int:dashboard_id>/customize/', customize_dashboard, name='customize_dashboard'),
     path('organizer/dashboard/<int:dashboard_id>/widgets/', get_dashboard_widgets, name='get_dashboard_widgets'),
+    
+    # User Management Endpoints
+    path('admin/user-analytics/', UserAnalyticsAPI.as_view(), name='user_analytics'),
+    path('admin/user-activity/', UserActivityAPI.as_view(), name='user_activity'),
+    path('admin/users/', UsersListAPI.as_view(), name='users_list'),
 ]
