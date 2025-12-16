@@ -238,5 +238,40 @@ class RevenueAnalytics(models.Model):
         return {'ticket_percentage': 0.0, 'sponsorship_percentage': 0.0}
 
 
-__all__ = ['AnalyticsEvent', 'MetricCalculation', 'Dashboard', 'DashboardWidget', 'EventMetrics', 'AttendanceAnalytics', 'FinancialReport', 'RevenueAnalytics']
+class UserAnalytics(models.Model):
+    user_id = models.CharField(max_length=100)
+    total_events_attended = models.IntegerField(default=0)
+    total_tickets_purchased = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'user_analytics'
+
+    def clean(self):
+        if not self.user_id:
+            raise ValidationError({'user_id': 'User ID is required'})
+
+    def calculate_engagement_score(self):
+        return self.total_events_attended + self.total_tickets_purchased
+
+
+class UserActivity(models.Model):
+    user_id = models.CharField(max_length=100)
+    activity_type = models.CharField(max_length=50)
+    event_id = models.CharField(max_length=100, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'user_activities'
+        indexes = [
+            models.Index(fields=['user_id', 'created_at']),
+        ]
+
+    @classmethod
+    def get_user_activities(cls, user_id):
+        return cls.objects.filter(user_id=user_id)
+
+
+__all__ = ['AnalyticsEvent', 'MetricCalculation', 'Dashboard', 'DashboardWidget', 'EventMetrics', 'AttendanceAnalytics', 'FinancialReport', 'RevenueAnalytics', 'UserAnalytics', 'UserActivity']
 
