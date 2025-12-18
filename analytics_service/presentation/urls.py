@@ -9,6 +9,7 @@ from presentation.views.financial_views import (
     GetFinancialReportView, RevenueAnalyticsView, ExportFinancialView, ExportFinancialCSVView
 )
 from presentation.views.user_views import UserAnalyticsAPI, UserActivityAPI, UsersListAPI
+from presentation.views.report_views import BuildReportView, SaveTemplateView, GenerateReportView
 
 urlpatterns = [
     # Health Check
@@ -45,4 +46,9 @@ urlpatterns = [
     path('admin/user-analytics/', UserAnalyticsAPI.as_view(), name='user_analytics'),
     path('admin/user-activity/', UserActivityAPI.as_view(), name='user_activity'),
     path('admin/users/', UsersListAPI.as_view(), name='users_list'),
+    
+    # Report Builder Endpoints
+    path('reports/build/', BuildReportView.as_view(), name='build_report'),
+    path('report-templates/', SaveTemplateView.as_view(), name='save_template'),
+    path('reports/generate/', GenerateReportView.as_view(), name='generate_report'),
 ]
