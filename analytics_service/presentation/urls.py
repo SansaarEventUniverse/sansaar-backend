@@ -9,7 +9,14 @@ from presentation.views.financial_views import (
     GetFinancialReportView, RevenueAnalyticsView, ExportFinancialView, ExportFinancialCSVView
 )
 from presentation.views.user_views import UserAnalyticsAPI, UserActivityAPI, UsersListAPI
+<<<<<<< HEAD
+from presentation.views.visualization_views import (
+    GetVisualizationView, CreateVisualizationView, CreateChartView, ExportChartView
+)
+||||||| 7eaac30
+=======
 from presentation.views.report_views import BuildReportView, SaveTemplateView, GenerateReportView
+>>>>>>> backend/analytics_service
 
 urlpatterns = [
     # Health Check
@@ -46,6 +53,13 @@ urlpatterns = [
     path('admin/user-analytics/', UserAnalyticsAPI.as_view(), name='user_analytics'),
     path('admin/user-activity/', UserActivityAPI.as_view(), name='user_activity'),
     path('admin/users/', UsersListAPI.as_view(), name='users_list'),
+<<<<<<< HEAD
+    
+    # Visualization Endpoints
+    path('visualizations/<int:visualization_id>/', GetVisualizationView.as_view(), name='get_visualization'),
+    path('visualizations/', CreateVisualizationView.as_view(), name='create_visualization'),
+    path('charts/', CreateChartView.as_view(), name='create_chart'),
+    path('charts/<int:chart_id>/export/', ExportChartView.as_view(), name='export_chart'),
     
     # Report Builder Endpoints
     path('reports/build/', BuildReportView.as_view(), name='build_report'),

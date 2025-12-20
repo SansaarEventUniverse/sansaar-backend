@@ -273,6 +273,65 @@ class UserActivity(models.Model):
         return cls.objects.filter(user_id=user_id)
 
 
+<<<<<<< HEAD
+class Visualization(models.Model):
+    name = models.CharField(max_length=200)
+    visualization_type = models.CharField(max_length=50)
+    config = models.JSONField(default=dict)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'visualizations'
+
+    def get_chart_count(self):
+        return self.charts.count()
+
+
+class Chart(models.Model):
+    visualization = models.ForeignKey(Visualization, on_delete=models.CASCADE, related_name='charts')
+    chart_type = models.CharField(max_length=50)
+    data = models.JSONField()
+    config = models.JSONField(default=dict)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'charts'
+
+    def validate_chart_data(self):
+        return isinstance(self.data, dict)
+
+
+__all__ = ['AnalyticsEvent', 'MetricCalculation', 'Dashboard', 'DashboardWidget', 'EventMetrics', 'AttendanceAnalytics', 'FinancialReport', 'RevenueAnalytics', 'UserAnalytics', 'UserActivity', 'Visualization', 'Chart']
+||||||| 7eaac30
+class Visualization(models.Model):
+    name = models.CharField(max_length=200)
+    visualization_type = models.CharField(max_length=50)
+    config = models.JSONField(default=dict)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'visualizations'
+
+    def get_chart_count(self):
+        return self.charts.count()
+
+
+class Chart(models.Model):
+    visualization = models.ForeignKey(Visualization, on_delete=models.CASCADE, related_name='charts')
+    chart_type = models.CharField(max_length=50)
+    data = models.JSONField()
+    config = models.JSONField(default=dict)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'charts'
+
+    def validate_chart_data(self):
+        return isinstance(self.data, dict)
+
+
 class CustomReport(models.Model):
     name = models.CharField(max_length=200)
     report_type = models.CharField(max_length=50)
