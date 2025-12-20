@@ -384,4 +384,29 @@ class SystemHealth(models.Model):
         return self.status == "critical"
 
 
-__all__ = ['AnalyticsEvent', 'MetricCalculation', 'Dashboard', 'DashboardWidget', 'EventMetrics', 'AttendanceAnalytics', 'FinancialReport', 'RevenueAnalytics', 'UserAnalytics', 'UserActivity', 'Visualization', 'Chart', 'CustomReport', 'ReportTemplate', 'PerformanceMetric', 'SystemHealth']
+class DataExport(models.Model):
+    export_name = models.CharField(max_length=200)
+    export_format = models.CharField(max_length=50)
+    status = models.CharField(max_length=50, default="pending")
+    file_path = models.CharField(max_length=500, blank=True, default="")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'data_exports'
+
+    def is_completed(self):
+        return self.status == "completed"
+
+
+class ExportTemplate(models.Model):
+    template_name = models.CharField(max_length=200)
+    export_format = models.CharField(max_length=50)
+    config = models.JSONField(default=dict)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'export_templates'
+
+
+__all__ = ['AnalyticsEvent', 'MetricCalculation', 'Dashboard', 'DashboardWidget', 'EventMetrics', 'AttendanceAnalytics', 'FinancialReport', 'RevenueAnalytics', 'UserAnalytics', 'UserActivity', 'Visualization', 'Chart', 'CustomReport', 'ReportTemplate', 'PerformanceMetric', 'SystemHealth', 'DataExport', 'ExportTemplate']
