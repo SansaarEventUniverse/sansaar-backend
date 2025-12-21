@@ -13,6 +13,7 @@ from presentation.views.visualization_views import (
     GetVisualizationView, CreateVisualizationView, CreateChartView, ExportChartView
 )
 from presentation.views.report_views import BuildReportView, SaveTemplateView, GenerateReportView
+from presentation.views.performance_views import GetPerformanceView, SystemHealthView, AlertsView
 
 urlpatterns = [
     # Health Check
@@ -60,4 +61,9 @@ urlpatterns = [
     path('reports/build/', BuildReportView.as_view(), name='build_report'),
     path('report-templates/', SaveTemplateView.as_view(), name='save_template'),
     path('reports/generate/', GenerateReportView.as_view(), name='generate_report'),
+    
+    # Performance Monitoring Endpoints
+    path('admin/performance/', GetPerformanceView.as_view(), name='get_performance'),
+    path('admin/system-health/', SystemHealthView.as_view(), name='system_health'),
+    path('admin/alerts/', AlertsView.as_view(), name='alerts'),
 ]
