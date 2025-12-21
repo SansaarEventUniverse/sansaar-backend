@@ -273,7 +273,6 @@ class UserActivity(models.Model):
         return cls.objects.filter(user_id=user_id)
 
 
-<<<<<<< HEAD
 class Visualization(models.Model):
     name = models.CharField(max_length=200)
     visualization_type = models.CharField(max_length=50)
@@ -302,8 +301,6 @@ class Chart(models.Model):
         return isinstance(self.data, dict)
 
 
-__all__ = ['AnalyticsEvent', 'MetricCalculation', 'Dashboard', 'DashboardWidget', 'EventMetrics', 'AttendanceAnalytics', 'FinancialReport', 'RevenueAnalytics', 'UserAnalytics', 'UserActivity', 'Visualization', 'Chart']
-||||||| 7eaac30
 class Visualization(models.Model):
     name = models.CharField(max_length=200)
     visualization_type = models.CharField(max_length=50)
@@ -357,5 +354,34 @@ class ReportTemplate(models.Model):
         db_table = 'report_templates'
 
 
-__all__ = ['AnalyticsEvent', 'MetricCalculation', 'Dashboard', 'DashboardWidget', 'EventMetrics', 'AttendanceAnalytics', 'FinancialReport', 'RevenueAnalytics', 'UserAnalytics', 'UserActivity', 'Visualization', 'Chart', 'CustomReport', 'ReportTemplate']
+class PerformanceMetric(models.Model):
+    metric_name = models.CharField(max_length=100)
+    metric_value = models.FloatField()
+    metric_unit = models.CharField(max_length=50, default="")
+    threshold = models.FloatField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        db_table = 'performance_metrics'
+
+    def is_healthy(self):
+        if self.threshold:
+            return self.metric_value < self.threshold
+        return True
+
+
+class SystemHealth(models.Model):
+    service_name = models.CharField(max_length=100)
+    status = models.CharField(max_length=50)
+    cpu_usage = models.FloatField(default=0.0)
+    memory_usage = models.FloatField(default=0.0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'system_health'
+
+    def is_critical(self):
+        return self.status == "critical"
+
+
+__all__ = ['AnalyticsEvent', 'MetricCalculation', 'Dashboard', 'DashboardWidget', 'EventMetrics', 'AttendanceAnalytics', 'FinancialReport', 'RevenueAnalytics', 'UserAnalytics', 'UserActivity', 'Visualization', 'Chart', 'CustomReport', 'ReportTemplate', 'PerformanceMetric', 'SystemHealth']

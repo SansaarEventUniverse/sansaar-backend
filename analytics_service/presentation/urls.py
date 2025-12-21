@@ -9,14 +9,11 @@ from presentation.views.financial_views import (
     GetFinancialReportView, RevenueAnalyticsView, ExportFinancialView, ExportFinancialCSVView
 )
 from presentation.views.user_views import UserAnalyticsAPI, UserActivityAPI, UsersListAPI
-<<<<<<< HEAD
 from presentation.views.visualization_views import (
     GetVisualizationView, CreateVisualizationView, CreateChartView, ExportChartView
 )
-||||||| 7eaac30
-=======
 from presentation.views.report_views import BuildReportView, SaveTemplateView, GenerateReportView
->>>>>>> backend/analytics_service
+from presentation.views.performance_views import GetPerformanceView, SystemHealthView, AlertsView
 
 urlpatterns = [
     # Health Check
@@ -53,7 +50,6 @@ urlpatterns = [
     path('admin/user-analytics/', UserAnalyticsAPI.as_view(), name='user_analytics'),
     path('admin/user-activity/', UserActivityAPI.as_view(), name='user_activity'),
     path('admin/users/', UsersListAPI.as_view(), name='users_list'),
-<<<<<<< HEAD
     
     # Visualization Endpoints
     path('visualizations/<int:visualization_id>/', GetVisualizationView.as_view(), name='get_visualization'),
@@ -65,4 +61,9 @@ urlpatterns = [
     path('reports/build/', BuildReportView.as_view(), name='build_report'),
     path('report-templates/', SaveTemplateView.as_view(), name='save_template'),
     path('reports/generate/', GenerateReportView.as_view(), name='generate_report'),
+    
+    # Performance Monitoring Endpoints
+    path('admin/performance/', GetPerformanceView.as_view(), name='get_performance'),
+    path('admin/system-health/', SystemHealthView.as_view(), name='system_health'),
+    path('admin/alerts/', AlertsView.as_view(), name='alerts'),
 ]
