@@ -14,6 +14,7 @@ from presentation.views.visualization_views import (
 )
 from presentation.views.report_views import BuildReportView, SaveTemplateView, GenerateReportView
 from presentation.views.performance_views import GetPerformanceView, SystemHealthView, AlertsView
+from presentation.views.export_views import ExportDataView, ScheduleExportView, GetExportStatusView
 
 urlpatterns = [
     # Health Check
@@ -66,4 +67,9 @@ urlpatterns = [
     path('admin/performance/', GetPerformanceView.as_view(), name='get_performance'),
     path('admin/system-health/', SystemHealthView.as_view(), name='system_health'),
     path('admin/alerts/', AlertsView.as_view(), name='alerts'),
+    
+    # Data Export Endpoints
+    path('data/export/', ExportDataView.as_view(), name='export_data'),
+    path('data/schedule-export/', ScheduleExportView.as_view(), name='schedule_export'),
+    path('exports/<int:export_id>/status/', GetExportStatusView.as_view(), name='export_status'),
 ]
