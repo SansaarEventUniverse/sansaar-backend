@@ -409,4 +409,35 @@ class ExportTemplate(models.Model):
         db_table = 'export_templates'
 
 
-__all__ = ['AnalyticsEvent', 'MetricCalculation', 'Dashboard', 'DashboardWidget', 'EventMetrics', 'AttendanceAnalytics', 'FinancialReport', 'RevenueAnalytics', 'UserAnalytics', 'UserActivity', 'Visualization', 'Chart', 'CustomReport', 'ReportTemplate', 'PerformanceMetric', 'SystemHealth', 'DataExport', 'ExportTemplate']
+class AuditTrail(models.Model):
+    user_id = models.CharField(max_length=100)
+    action = models.CharField(max_length=100)
+    resource = models.CharField(max_length=200, default="")
+    status = models.CharField(max_length=50, default="success")
+    metadata = models.JSONField(default=dict)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'audit_trails'
+        indexes = [
+            models.Index(fields=['user_id', 'created_at']),
+        ]
+
+    def is_successful(self):
+        return self.status == "success"
+
+
+class ComplianceReport(models.Model):
+    report_type = models.CharField(max_length=100)
+    status = models.CharField(max_length=50)
+    findings = models.JSONField(default=dict)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'compliance_reports'
+
+    def is_compliant(self):
+        return self.status == "compliant"
+
+
+__all__ = ['AnalyticsEvent', 'MetricCalculation', 'Dashboard', 'DashboardWidget', 'EventMetrics', 'AttendanceAnalytics', 'FinancialReport', 'RevenueAnalytics', 'UserAnalytics', 'UserActivity', 'Visualization', 'Chart', 'CustomReport', 'ReportTemplate', 'PerformanceMetric', 'SystemHealth', 'DataExport', 'ExportTemplate', 'AuditTrail', 'ComplianceReport']
