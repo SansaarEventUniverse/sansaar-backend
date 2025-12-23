@@ -15,6 +15,7 @@ from presentation.views.visualization_views import (
 from presentation.views.report_views import BuildReportView, SaveTemplateView, GenerateReportView
 from presentation.views.performance_views import GetPerformanceView, SystemHealthView, AlertsView
 from presentation.views.export_views import ExportDataView, ScheduleExportView, GetExportStatusView
+from presentation.views.audit_views import GetAuditTrailView, ComplianceReportView, AuditSearchView
 
 urlpatterns = [
     # Health Check
@@ -72,4 +73,9 @@ urlpatterns = [
     path('data/export/', ExportDataView.as_view(), name='export_data'),
     path('data/schedule-export/', ScheduleExportView.as_view(), name='schedule_export'),
     path('exports/<int:export_id>/status/', GetExportStatusView.as_view(), name='export_status'),
+    
+    # Audit Trail Endpoints
+    path('admin/audit-trail/', GetAuditTrailView.as_view(), name='audit_trail'),
+    path('admin/compliance/', ComplianceReportView.as_view(), name='compliance_report'),
+    path('admin/audit/search/', AuditSearchView.as_view(), name='audit_search'),
 ]
