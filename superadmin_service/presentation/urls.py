@@ -14,6 +14,11 @@ from presentation.views.system_health_views import (
     HealthCheckView,
     MonitoringDashboardView,
 )
+from presentation.views.api_analytics_views import (
+    GetAPIAnalyticsView,
+    APIUsageReportView,
+    APIMonitoringView,
+)
 
 urlpatterns = [
     # Health Check
@@ -45,4 +50,9 @@ urlpatterns = [
     path("admin/system-health/", GetSystemHealthView.as_view(), name="system_health"),
     path("admin/health-check/", HealthCheckView.as_view(), name="health_check_api"),
     path("admin/monitoring/", MonitoringDashboardView.as_view(), name="monitoring_dashboard"),
+    
+    # API Analytics & Usage Monitoring
+    path("admin/api-analytics/", GetAPIAnalyticsView.as_view(), name="api_analytics"),
+    path("admin/api-usage/", APIUsageReportView.as_view(), name="api_usage"),
+    path("admin/api-monitoring/", APIMonitoringView.as_view(), name="api_monitoring"),
 ]
