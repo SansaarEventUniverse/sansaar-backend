@@ -301,34 +301,6 @@ class Chart(models.Model):
         return isinstance(self.data, dict)
 
 
-class Visualization(models.Model):
-    name = models.CharField(max_length=200)
-    visualization_type = models.CharField(max_length=50)
-    config = models.JSONField(default=dict)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        db_table = 'visualizations'
-
-    def get_chart_count(self):
-        return self.charts.count()
-
-
-class Chart(models.Model):
-    visualization = models.ForeignKey(Visualization, on_delete=models.CASCADE, related_name='charts')
-    chart_type = models.CharField(max_length=50)
-    data = models.JSONField()
-    config = models.JSONField(default=dict)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        db_table = 'charts'
-
-    def validate_chart_data(self):
-        return isinstance(self.data, dict)
-
-
 class CustomReport(models.Model):
     name = models.CharField(max_length=200)
     report_type = models.CharField(max_length=50)
@@ -440,4 +412,31 @@ class ComplianceReport(models.Model):
         return self.status == "compliant"
 
 
-__all__ = ['AnalyticsEvent', 'MetricCalculation', 'Dashboard', 'DashboardWidget', 'EventMetrics', 'AttendanceAnalytics', 'FinancialReport', 'RevenueAnalytics', 'UserAnalytics', 'UserActivity', 'Visualization', 'Chart', 'CustomReport', 'ReportTemplate', 'PerformanceMetric', 'SystemHealth', 'DataExport', 'ExportTemplate', 'AuditTrail', 'ComplianceReport']
+class MobileDashboard(models.Model):
+    name = models.CharField(max_length=200)
+    layout = models.CharField(max_length=50)
+    is_optimized = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'mobile_dashboards'
+
+    def is_responsive(self):
+        return self.layout == "responsive"
+
+
+class MobileWidget(models.Model):
+    dashboard = models.ForeignKey(MobileDashboard, on_delete=models.CASCADE, related_name='widgets')
+    widget_type = models.CharField(max_length=50)
+    size = models.CharField(max_length=20)
+    position = models.IntegerField()
+    config = models.JSONField(default=dict)
+
+    class Meta:
+        db_table = 'mobile_widgets'
+
+    def is_compact(self):
+        return self.size == "small"
+
+
+__all__ = ['AnalyticsEvent', 'MetricCalculation', 'Dashboard', 'DashboardWidget', 'EventMetrics', 'AttendanceAnalytics', 'FinancialReport', 'RevenueAnalytics', 'UserAnalytics', 'UserActivity', 'Visualization', 'Chart', 'CustomReport', 'ReportTemplate', 'PerformanceMetric', 'SystemHealth', 'DataExport', 'ExportTemplate', 'AuditTrail', 'ComplianceReport', 'MobileDashboard', 'MobileWidget']
