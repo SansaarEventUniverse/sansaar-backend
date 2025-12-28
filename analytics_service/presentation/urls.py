@@ -16,6 +16,7 @@ from presentation.views.report_views import BuildReportView, SaveTemplateView, G
 from presentation.views.performance_views import GetPerformanceView, SystemHealthView, AlertsView
 from presentation.views.export_views import ExportDataView, ScheduleExportView, GetExportStatusView
 from presentation.views.audit_views import GetAuditTrailView, ComplianceReportView, AuditSearchView
+from presentation.views.mobile_dashboard_views import GetMobileDashboardView, MobileWidgetsView
 
 urlpatterns = [
     # Health Check
@@ -78,4 +79,8 @@ urlpatterns = [
     path('admin/audit-trail/', GetAuditTrailView.as_view(), name='audit_trail'),
     path('admin/compliance/', ComplianceReportView.as_view(), name='compliance_report'),
     path('admin/audit/search/', AuditSearchView.as_view(), name='audit_search'),
+    
+    # Mobile Dashboard Endpoints
+    path('mobile/dashboard/<int:dashboard_id>/', GetMobileDashboardView.as_view(), name='mobile_dashboard'),
+    path('mobile/widgets/', MobileWidgetsView.as_view(), name='mobile_widgets'),
 ]
