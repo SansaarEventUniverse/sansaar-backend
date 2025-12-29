@@ -19,6 +19,11 @@ from presentation.views.api_analytics_views import (
     APIUsageReportView,
     APIMonitoringView,
 )
+from presentation.views.notification_views import (
+    GetNotificationsView,
+    CreateNotificationView,
+    NotificationRulesView,
+)
 
 urlpatterns = [
     # Health Check
@@ -55,4 +60,9 @@ urlpatterns = [
     path("admin/api-analytics/", GetAPIAnalyticsView.as_view(), name="api_analytics"),
     path("admin/api-usage/", APIUsageReportView.as_view(), name="api_usage"),
     path("admin/api-monitoring/", APIMonitoringView.as_view(), name="api_monitoring"),
+    
+    # Notification Center
+    path("admin/notifications/", GetNotificationsView.as_view(), name="notifications"),
+    path("admin/notifications/create/", CreateNotificationView.as_view(), name="create_notification"),
+    path("admin/notification-rules/", NotificationRulesView.as_view(), name="notification_rules"),
 ]
