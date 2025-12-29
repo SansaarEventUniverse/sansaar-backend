@@ -24,6 +24,11 @@ from presentation.views.notification_views import (
     CreateNotificationView,
     NotificationRulesView,
 )
+from presentation.views.security_views import (
+    GetSecurityEventsView,
+    SecurityDashboardView,
+    ThreatAnalysisView,
+)
 
 urlpatterns = [
     # Health Check
@@ -65,4 +70,9 @@ urlpatterns = [
     path("admin/notifications/", GetNotificationsView.as_view(), name="notifications"),
     path("admin/notifications/create/", CreateNotificationView.as_view(), name="create_notification"),
     path("admin/notification-rules/", NotificationRulesView.as_view(), name="notification_rules"),
+    
+    # Security Monitoring
+    path("admin/security-events/", GetSecurityEventsView.as_view(), name="security_events"),
+    path("admin/security-dashboard/", SecurityDashboardView.as_view(), name="security_dashboard"),
+    path("admin/threat-analysis/", ThreatAnalysisView.as_view(), name="threat_analysis"),
 ]
