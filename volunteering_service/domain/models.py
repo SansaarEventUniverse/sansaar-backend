@@ -49,3 +49,33 @@ class VolunteerSkill(models.Model):
     
     def __str__(self):
         return f"{self.skill_name} ({self.proficiency_level})"
+
+class VolunteerApplication(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+        ('withdrawn', 'Withdrawn'),
+    ]
+    
+    opportunity = models.ForeignKey(VolunteerOpportunity, on_delete=models.CASCADE, related_name='applications')
+    volunteer_name = models.CharField(max_length=200)
+    volunteer_email = models.EmailField()
+    volunteer_phone = models.CharField(max_length=20)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    applied_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def is_pending(self):
+        return self.status == 'pending'
+    
+    def approve(self):
+        self.status = 'approved'
+        self.save()
+    
+    def reject(self):
+        self.status = 'rejected'
+        self.save()
+    
+    def __str__(self):
+        return f"{self.volunteer_name} - {self.opportunity.title}"
