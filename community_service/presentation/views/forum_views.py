@@ -25,8 +25,15 @@ def get_forums(request):
 @api_view(['POST'])
 def create_post(request, forum_id):
     data = request.data.copy()
-    data['forum_id'] = forum_id
+    data['forum'] = forum_id
+    
+    serializer = ForumPostSerializer(data=data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
     service = PostManagementService()
-    post = service.create(data)
-    serializer = ForumPostSerializer(post)
-    return Response(serializer.data, status=status.HTTP_201_CREATED)
+    validated_data = serializer.validated_data.copy()
+    validated_data['forum_id'] = validated_data.pop('forum').id
+    post = service.create(validated_data)
+    response_serializer = ForumPostSerializer(post)
+    return Response(response_serializer.data, status=status.HTTP_201_CREATED)
