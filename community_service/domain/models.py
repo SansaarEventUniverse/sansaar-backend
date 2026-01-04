@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 
 class Forum(models.Model):
     CATEGORY_CHOICES = [
@@ -49,3 +50,49 @@ class ForumPost(models.Model):
     
     def __str__(self):
         return self.title
+
+class Feedback(models.Model):
+    FEEDBACK_TYPE_CHOICES = [
+        ('event', 'Event'),
+        ('forum', 'Forum'),
+        ('volunteer', 'Volunteer'),
+    ]
+    
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ]
+    
+    feedback_type = models.CharField(max_length=20, choices=FEEDBACK_TYPE_CHOICES)
+    entity_id = models.IntegerField()
+    user_name = models.CharField(max_length=200)
+    user_email = models.EmailField()
+    rating = models.IntegerField()
+    comment = models.TextField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def is_positive(self):
+        return self.rating >= 4
+    
+    def is_negative(self):
+        return self.rating <= 2
+    
+    def approve(self):
+        self.status = 'approved'
+        self.save()
+    
+    def clean(self):
+        if self.rating < 1 or self.rating > 5:
+            raise ValidationError('Rating must be between 1 and 5')
+    
+    def __str__(self):
+        return f"{self.feedback_type.title()} Feedback for {self.entity_id} - Rating: {self.rating}"
+    
+    class Meta:
+        indexes = [
+            models.Index(fields=['feedback_type', 'entity_id']),
+            models.Index(fields=['status']),
+        ]
