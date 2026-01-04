@@ -47,7 +47,7 @@ class MetricCalculation(models.Model):
         indexes = [
             models.Index(fields=['metric_name', 'created_at']),
         ]
-
+    
     def clean(self):
         if not self.metric_name:
             raise ValidationError({'metric_name': 'Metric name is required'})
@@ -60,6 +60,40 @@ class MetricCalculation(models.Model):
     @classmethod
     def get_latest_metrics(cls):
         return cls.objects.order_by('-created_at')
+
+
+class EventFeedback(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ]
+    
+    event_id = models.IntegerField()
+    attendee_name = models.CharField(max_length=200)
+    attendee_email = models.EmailField()
+    rating = models.IntegerField()
+    comment = models.TextField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def is_positive(self):
+        return self.rating >= 4
+    
+    def is_negative(self):
+        return self.rating <= 2
+    
+    def approve(self):
+        self.status = 'approved'
+        self.save()
+    
+    def clean(self):
+        if self.rating < 1 or self.rating > 5:
+            raise ValidationError('Rating must be between 1 and 5')
+    
+    def __str__(self):
+        return f"Feedback for Event {self.event_id} - Rating: {self.rating}"
 
 
 class Dashboard(models.Model):
