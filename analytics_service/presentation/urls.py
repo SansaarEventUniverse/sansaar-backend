@@ -17,6 +17,7 @@ from presentation.views.performance_views import GetPerformanceView, SystemHealt
 from presentation.views.export_views import ExportDataView, ScheduleExportView, GetExportStatusView
 from presentation.views.audit_views import GetAuditTrailView, ComplianceReportView, AuditSearchView
 from presentation.views.mobile_dashboard_views import GetMobileDashboardView, MobileWidgetsView
+from presentation.views.feedback_views import submit_feedback, get_feedback, feedback_analytics
 
 urlpatterns = [
     # Health Check
@@ -27,6 +28,11 @@ urlpatterns = [
     path('real-time/', get_realtime_metrics, name='realtime_metrics'),
     path('query/', analytics_query, name='analytics_query'),
     path('events/', create_analytics_event, name='create_event'),
+    
+    # Event Feedback
+    path('events/<int:event_id>/feedback/', submit_feedback, name='submit_feedback'),
+    path('events/<int:event_id>/feedback/list/', get_feedback, name='get_feedback'),
+    path('events/<int:event_id>/feedback/analytics/', feedback_analytics, name='feedback_analytics'),
     
     # Event Analytics Endpoints
     path('events/<str:event_id>/track-view/', TrackViewAPI.as_view(), name='track_view'),
