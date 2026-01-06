@@ -96,3 +96,44 @@ class Feedback(models.Model):
             models.Index(fields=['feedback_type', 'entity_id']),
             models.Index(fields=['status']),
         ]
+
+class Connection(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('rejected', 'Rejected'),
+    ]
+    
+    from_user_id = models.IntegerField()
+    to_user_id = models.IntegerField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def is_pending(self):
+        return self.status == 'pending'
+    
+    def is_accepted(self):
+        return self.status == 'accepted'
+    
+    def accept(self):
+        self.status = 'accepted'
+        self.save()
+    
+    def reject(self):
+        self.status = 'rejected'
+        self.save()
+    
+    def clean(self):
+        if self.from_user_id == self.to_user_id:
+            raise ValidationError('Cannot connect to yourself')
+    
+    def __str__(self):
+        return f"Connection: {self.from_user_id} -> {self.to_user_id} ({self.status})"
+    
+    class Meta:
+        unique_together = ['from_user_id', 'to_user_id']
+        indexes = [
+            models.Index(fields=['from_user_id', 'status']),
+            models.Index(fields=['to_user_id', 'status']),
+        ]
