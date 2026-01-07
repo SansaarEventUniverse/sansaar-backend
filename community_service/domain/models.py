@@ -219,3 +219,79 @@ class GroupMembership(models.Model):
             models.Index(fields=['user_id', 'status']),
             models.Index(fields=['group', 'status']),
         ]
+
+class MentorshipProgram(models.Model):
+    STATUS_CHOICES = [
+        ('active', 'Active'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled'),
+    ]
+    
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    skills_required = models.TextField()
+    duration_weeks = models.IntegerField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def is_active(self):
+        return self.status == 'active'
+    
+    def complete(self):
+        self.status = 'completed'
+        self.save()
+    
+    def cancel(self):
+        self.status = 'cancelled'
+        self.save()
+    
+    def __str__(self):
+        return self.title
+    
+    class Meta:
+        indexes = [
+            models.Index(fields=['status']),
+        ]
+
+class MentorMentee(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('active', 'Active'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled'),
+    ]
+    
+    program = models.ForeignKey(MentorshipProgram, on_delete=models.CASCADE, related_name='relationships')
+    mentor_user_id = models.IntegerField()
+    mentee_user_id = models.IntegerField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def is_active(self):
+        return self.status == 'active'
+    
+    def activate(self):
+        self.status = 'active'
+        self.save()
+    
+    def complete(self):
+        self.status = 'completed'
+        self.save()
+    
+    def clean(self):
+        if self.mentor_user_id == self.mentee_user_id:
+            raise ValidationError('Mentor and mentee cannot be the same person')
+    
+    def __str__(self):
+        return f"Mentor {self.mentor_user_id} - Mentee {self.mentee_user_id} ({self.status})"
+    
+    class Meta:
+        unique_together = ['program', 'mentor_user_id', 'mentee_user_id']
+        indexes = [
+            models.Index(fields=['mentor_user_id', 'status']),
+            models.Index(fields=['mentee_user_id', 'status']),
+        ]
