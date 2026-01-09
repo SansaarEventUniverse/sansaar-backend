@@ -137,3 +137,85 @@ class Connection(models.Model):
             models.Index(fields=['from_user_id', 'status']),
             models.Index(fields=['to_user_id', 'status']),
         ]
+
+class InterestGroup(models.Model):
+    CATEGORY_CHOICES = [
+        ('technology', 'Technology'),
+        ('sports', 'Sports'),
+        ('arts', 'Arts'),
+        ('education', 'Education'),
+        ('business', 'Business'),
+        ('other', 'Other'),
+    ]
+    
+    name = models.CharField(max_length=200)
+    description = models.TextField()
+    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
+    creator_user_id = models.IntegerField()
+    is_active = models.BooleanField(default=True)
+    max_members = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def is_full(self):
+        if self.max_members == 0:
+            return False
+        return self.memberships.filter(status='active').count() >= self.max_members
+    
+    def deactivate(self):
+        self.is_active = False
+        self.save()
+    
+    def __str__(self):
+        return self.name
+    
+    class Meta:
+        indexes = [
+            models.Index(fields=['category']),
+            models.Index(fields=['is_active']),
+        ]
+
+class GroupMembership(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('active', 'Active'),
+        ('removed', 'Removed'),
+    ]
+    
+    ROLE_CHOICES = [
+        ('member', 'Member'),
+        ('moderator', 'Moderator'),
+        ('admin', 'Admin'),
+    ]
+    
+    group = models.ForeignKey(InterestGroup, on_delete=models.CASCADE, related_name='memberships')
+    user_id = models.IntegerField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='member')
+    joined_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def is_active(self):
+        return self.status == 'active'
+    
+    def activate(self):
+        self.status = 'active'
+        self.save()
+    
+    def remove(self):
+        self.status = 'removed'
+        self.save()
+    
+    def promote_to_moderator(self):
+        self.role = 'moderator'
+        self.save()
+    
+    def __str__(self):
+        return f"{self.user_id} in {self.group.name} ({self.status})"
+    
+    class Meta:
+        unique_together = ['group', 'user_id']
+        indexes = [
+            models.Index(fields=['user_id', 'status']),
+            models.Index(fields=['group', 'status']),
+        ]
