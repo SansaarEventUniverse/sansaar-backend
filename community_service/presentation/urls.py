@@ -4,6 +4,7 @@ from presentation.views.forum_views import create_forum, get_forums, create_post
 from presentation.views.feedback_views import submit_feedback, get_feedback, feedback_analytics
 from presentation.views.connection_views import connect_user, get_connections, update_connection_status, get_recommendations
 from presentation.views.interest_group_views import create_group, get_groups, join_group, get_recommendations as get_group_recommendations
+from presentation.views.mentorship_views import create_program, get_programs, join_program, get_mentorships
 
 urlpatterns = [
     # Health Check
@@ -30,4 +31,10 @@ urlpatterns = [
     path('interest-groups/', get_groups, name='get_interest_groups'),
     path('interest-groups/<int:group_id>/join/', join_group, name='join_interest_group'),
     path('interest-groups/recommendations/', get_group_recommendations, name='get_group_recommendations'),
+    
+    # Mentorship Programs
+    path('mentorship-programs/create/', create_program, name='create_mentorship_program'),
+    path('mentorship-programs/', get_programs, name='get_mentorship_programs'),
+    path('mentorship-programs/<int:program_id>/join/', join_program, name='join_mentorship_program'),
+    path('mentorships/', get_mentorships, name='get_mentorships'),
 ]
