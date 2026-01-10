@@ -295,3 +295,69 @@ class MentorMentee(models.Model):
             models.Index(fields=['mentor_user_id', 'status']),
             models.Index(fields=['mentee_user_id', 'status']),
         ]
+
+class Achievement(models.Model):
+    CATEGORY_CHOICES = [
+        ('participation', 'Participation'),
+        ('contribution', 'Contribution'),
+        ('leadership', 'Leadership'),
+        ('learning', 'Learning'),
+    ]
+    
+    name = models.CharField(max_length=200)
+    description = models.TextField()
+    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
+    points = models.IntegerField(default=0)
+    badge_icon = models.CharField(max_length=100, blank=True)
+    criteria = models.TextField()
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return self.name
+    
+    class Meta:
+        indexes = [
+            models.Index(fields=['category']),
+            models.Index(fields=['is_active']),
+        ]
+
+class UserAchievement(models.Model):
+    STATUS_CHOICES = [
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed'),
+    ]
+    
+    achievement = models.ForeignKey(Achievement, on_delete=models.CASCADE, related_name='user_achievements')
+    user_id = models.IntegerField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='in_progress')
+    progress = models.IntegerField(default=0)
+    completed_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def is_completed(self):
+        return self.status == 'completed'
+    
+    def complete(self):
+        from django.utils import timezone
+        self.status = 'completed'
+        self.progress = 100
+        self.completed_at = timezone.now()
+        self.save()
+    
+    def update_progress(self, progress):
+        self.progress = min(progress, 100)
+        if self.progress >= 100:
+            self.complete()
+        else:
+            self.save()
+    
+    def __str__(self):
+        return f"{self.user_id} - {self.achievement.name} ({self.progress}%)"
+    
+    class Meta:
+        unique_together = ['achievement', 'user_id']
+        indexes = [
+            models.Index(fields=['user_id', 'status']),
+        ]
