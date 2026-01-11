@@ -5,6 +5,7 @@ from presentation.views.feedback_views import submit_feedback, get_feedback, fee
 from presentation.views.connection_views import connect_user, get_connections, update_connection_status, get_recommendations
 from presentation.views.interest_group_views import create_group, get_groups, join_group, get_recommendations as get_group_recommendations
 from presentation.views.mentorship_views import create_program, get_programs, join_program, get_mentorships
+from presentation.views.achievement_views import create_achievement, get_achievements, get_user_achievements, get_user_progress
 
 urlpatterns = [
     # Health Check
@@ -37,4 +38,10 @@ urlpatterns = [
     path('mentorship-programs/', get_programs, name='get_mentorship_programs'),
     path('mentorship-programs/<int:program_id>/join/', join_program, name='join_mentorship_program'),
     path('mentorships/', get_mentorships, name='get_mentorships'),
+    
+    # Achievements
+    path('achievements/create/', create_achievement, name='create_achievement'),
+    path('achievements/', get_achievements, name='get_achievements'),
+    path('users/<int:user_id>/achievements/', get_user_achievements, name='get_user_achievements'),
+    path('users/<int:user_id>/progress/', get_user_progress, name='get_user_progress'),
 ]
