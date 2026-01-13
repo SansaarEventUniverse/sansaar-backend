@@ -6,6 +6,7 @@ from presentation.views.connection_views import connect_user, get_connections, u
 from presentation.views.interest_group_views import create_group, get_groups, join_group, get_recommendations as get_group_recommendations
 from presentation.views.mentorship_views import create_program, get_programs, join_program, get_mentorships
 from presentation.views.achievement_views import create_achievement, get_achievements, get_user_achievements, get_user_progress
+from presentation.views.content_views import share_content, get_shared_content, collaborate, get_collaborators
 
 urlpatterns = [
     # Health Check
@@ -44,4 +45,10 @@ urlpatterns = [
     path('achievements/', get_achievements, name='get_achievements'),
     path('users/<int:user_id>/achievements/', get_user_achievements, name='get_user_achievements'),
     path('users/<int:user_id>/progress/', get_user_progress, name='get_user_progress'),
+    
+    # Content Sharing
+    path('content/share/', share_content, name='share_content'),
+    path('content/shared/', get_shared_content, name='get_shared_content'),
+    path('content/<int:content_id>/collaborate/', collaborate, name='collaborate'),
+    path('content/<int:content_id>/collaborators/', get_collaborators, name='get_collaborators'),
 ]

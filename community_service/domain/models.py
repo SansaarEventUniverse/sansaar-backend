@@ -361,3 +361,77 @@ class UserAchievement(models.Model):
         indexes = [
             models.Index(fields=['user_id', 'status']),
         ]
+
+class SharedContent(models.Model):
+    CONTENT_TYPE_CHOICES = [
+        ('article', 'Article'),
+        ('document', 'Document'),
+        ('link', 'Link'),
+        ('media', 'Media'),
+    ]
+    
+    STATUS_CHOICES = [
+        ('draft', 'Draft'),
+        ('published', 'Published'),
+        ('archived', 'Archived'),
+    ]
+    
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    content_type = models.CharField(max_length=20, choices=CONTENT_TYPE_CHOICES)
+    content_url = models.URLField(blank=True)
+    creator_user_id = models.IntegerField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
+    is_collaborative = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def is_published(self):
+        return self.status == 'published'
+    
+    def publish(self):
+        self.status = 'published'
+        self.save()
+    
+    def archive(self):
+        self.status = 'archived'
+        self.save()
+    
+    def __str__(self):
+        return self.title
+    
+    class Meta:
+        indexes = [
+            models.Index(fields=['creator_user_id']),
+            models.Index(fields=['status']),
+            models.Index(fields=['content_type']),
+        ]
+
+class ContentCollaboration(models.Model):
+    ROLE_CHOICES = [
+        ('viewer', 'Viewer'),
+        ('editor', 'Editor'),
+        ('owner', 'Owner'),
+    ]
+    
+    content = models.ForeignKey(SharedContent, on_delete=models.CASCADE, related_name='collaborations')
+    user_id = models.IntegerField()
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='viewer')
+    joined_at = models.DateTimeField(auto_now_add=True)
+    
+    def is_editor(self):
+        return self.role in ['editor', 'owner']
+    
+    def promote_to_editor(self):
+        self.role = 'editor'
+        self.save()
+    
+    def __str__(self):
+        return f"{self.user_id} - {self.content.title} ({self.role})"
+    
+    class Meta:
+        unique_together = ['content', 'user_id']
+        indexes = [
+            models.Index(fields=['user_id']),
+            models.Index(fields=['content', 'role']),
+        ]
