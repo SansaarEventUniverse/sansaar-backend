@@ -7,6 +7,7 @@ from presentation.views.interest_group_views import create_group, get_groups, jo
 from presentation.views.mentorship_views import create_program, get_programs, join_program, get_mentorships
 from presentation.views.achievement_views import create_achievement, get_achievements, get_user_achievements, get_user_progress
 from presentation.views.content_views import share_content, get_shared_content, collaborate, get_collaborators
+from presentation.views.moderation_views import moderation_dashboard, report_content, moderation_actions
 
 urlpatterns = [
     # Health Check
@@ -51,4 +52,9 @@ urlpatterns = [
     path('content/shared/', get_shared_content, name='get_shared_content'),
     path('content/<int:content_id>/collaborate/', collaborate, name='collaborate'),
     path('content/<int:content_id>/collaborators/', get_collaborators, name='get_collaborators'),
+    
+    # Community Moderation
+    path('admin/moderation/', moderation_dashboard, name='moderation_dashboard'),
+    path('content/<int:content_id>/report/', report_content, name='report_content'),
+    path('moderation/actions/', moderation_actions, name='moderation_actions'),
 ]
