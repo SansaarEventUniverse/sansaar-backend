@@ -435,3 +435,73 @@ class ContentCollaboration(models.Model):
             models.Index(fields=['user_id']),
             models.Index(fields=['content', 'role']),
         ]
+
+class ModerationRule(models.Model):
+    RULE_TYPE_CHOICES = [
+        ('keyword', 'Keyword Filter'),
+        ('spam', 'Spam Detection'),
+        ('profanity', 'Profanity Filter'),
+        ('harassment', 'Harassment Detection'),
+    ]
+    
+    SEVERITY_CHOICES = [
+        ('low', 'Low'),
+        ('medium', 'Medium'),
+        ('high', 'High'),
+    ]
+    
+    name = models.CharField(max_length=200)
+    rule_type = models.CharField(max_length=20, choices=RULE_TYPE_CHOICES)
+    pattern = models.TextField()
+    severity = models.CharField(max_length=20, choices=SEVERITY_CHOICES)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.name} ({self.severity})"
+    
+    class Meta:
+        indexes = [
+            models.Index(fields=['rule_type']),
+            models.Index(fields=['is_active']),
+        ]
+
+class ModerationAction(models.Model):
+    ACTION_TYPE_CHOICES = [
+        ('warning', 'Warning'),
+        ('remove', 'Remove Content'),
+        ('suspend', 'Suspend User'),
+        ('ban', 'Ban User'),
+    ]
+    
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ]
+    
+    rule = models.ForeignKey(ModerationRule, on_delete=models.CASCADE, related_name='actions', null=True, blank=True)
+    action_type = models.CharField(max_length=20, choices=ACTION_TYPE_CHOICES)
+    target_type = models.CharField(max_length=50)
+    target_id = models.IntegerField()
+    moderator_id = models.IntegerField(null=True, blank=True)
+    reason = models.TextField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def approve(self):
+        self.status = 'approved'
+        self.save()
+    
+    def reject(self):
+        self.status = 'rejected'
+        self.save()
+    
+    def __str__(self):
+        return f"{self.action_type} on {self.target_type}:{self.target_id}"
+    
+    class Meta:
+        indexes = [
+            models.Index(fields=['target_type', 'target_id']),
+            models.Index(fields=['status']),
+        ]
