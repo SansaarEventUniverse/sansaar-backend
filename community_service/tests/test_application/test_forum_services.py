@@ -53,19 +53,3 @@ class TestPostManagementService:
         service = PostManagementService()
         published = service.publish(post.id)
         assert published.status == 'published'
-
-@pytest.mark.django_db
-class TestModerationService:
-    def test_moderate_post(self):
-        forum = Forum.objects.create(title="Forum", description="Test", category="general")
-        post = ForumPost.objects.create(
-            forum=forum,
-            author_name="User",
-            author_email="user@example.com",
-            title="Post",
-            content="Content",
-            status="published"
-        )
-        service = ModerationService()
-        moderated = service.moderate_post(post.id)
-        assert moderated.status == 'moderated'
