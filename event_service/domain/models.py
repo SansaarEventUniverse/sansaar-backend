@@ -9,6 +9,7 @@ from .document import Document
 from .calendar import CalendarEvent
 from .template import EventTemplate
 from .clone import EventClone
+from .collaboration import EventCollaboration, CollaborationTask
 
 __all__ = [
     "Event",
@@ -28,4 +29,6 @@ __all__ = [
     "CalendarEvent",
     "EventTemplate",
     "EventClone",
+    "EventCollaboration",
+    "CollaborationTask",
 ]
