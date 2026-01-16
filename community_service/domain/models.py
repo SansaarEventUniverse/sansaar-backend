@@ -505,3 +505,5 @@ class ModerationAction(models.Model):
             models.Index(fields=['target_type', 'target_id']),
             models.Index(fields=['status']),
         ]
+
+from .resource_library import ResourceLibrary, SharedResource
