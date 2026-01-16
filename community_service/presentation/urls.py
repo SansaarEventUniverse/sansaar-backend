@@ -8,6 +8,7 @@ from presentation.views.mentorship_views import create_program, get_programs, jo
 from presentation.views.achievement_views import create_achievement, get_achievements, get_user_achievements, get_user_progress
 from presentation.views.content_views import share_content, get_shared_content, collaborate, get_collaborators
 from presentation.views.moderation_views import moderation_dashboard, report_content, moderation_actions
+from presentation.views.resource_views import upload_resource, search_resources, get_resource_library
 
 urlpatterns = [
     # Health Check
@@ -57,4 +58,9 @@ urlpatterns = [
     path('admin/moderation/', moderation_dashboard, name='moderation_dashboard'),
     path('content/<int:content_id>/report/', report_content, name='report_content'),
     path('moderation/actions/', moderation_actions, name='moderation_actions'),
+    
+    # Resource Sharing
+    path('resources/upload/', upload_resource, name='upload_resource'),
+    path('resources/search/', search_resources, name='search_resources'),
+    path('resource-library/', get_resource_library, name='get_resource_library'),
 ]
