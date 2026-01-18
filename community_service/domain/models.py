@@ -1,6 +1,9 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 
+from .resource_library import ResourceLibrary, SharedResource
+from .analytics import CommunityAnalytics, EngagementMetrics
+
 class Forum(models.Model):
     CATEGORY_CHOICES = [
         ('general', 'General'),
@@ -505,5 +508,3 @@ class ModerationAction(models.Model):
             models.Index(fields=['target_type', 'target_id']),
             models.Index(fields=['status']),
         ]
-
-from .resource_library import ResourceLibrary, SharedResource
