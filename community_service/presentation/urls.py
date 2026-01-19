@@ -9,6 +9,7 @@ from presentation.views.achievement_views import create_achievement, get_achieve
 from presentation.views.content_views import share_content, get_shared_content, collaborate, get_collaborators
 from presentation.views.moderation_views import moderation_dashboard, report_content, moderation_actions
 from presentation.views.resource_views import upload_resource, search_resources, get_resource_library
+from presentation.views.analytics_views import get_community_analytics, get_engagement_report, get_insights_dashboard
 
 urlpatterns = [
     # Health Check
@@ -63,4 +64,9 @@ urlpatterns = [
     path('resources/upload/', upload_resource, name='upload_resource'),
     path('resources/search/', search_resources, name='search_resources'),
     path('resource-library/', get_resource_library, name='get_resource_library'),
+    
+    # Community Analytics
+    path('analytics/', get_community_analytics, name='get_community_analytics'),
+    path('engagement/', get_engagement_report, name='get_engagement_report'),
+    path('insights/', get_insights_dashboard, name='get_insights_dashboard'),
 ]
