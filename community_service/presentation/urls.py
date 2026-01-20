@@ -10,6 +10,7 @@ from presentation.views.content_views import share_content, get_shared_content, 
 from presentation.views.moderation_views import moderation_dashboard, report_content, moderation_actions
 from presentation.views.resource_views import upload_resource, search_resources, get_resource_library
 from presentation.views.analytics_views import get_community_analytics, get_engagement_report, get_insights_dashboard
+from presentation.views.gamification_views import get_user_rewards, get_leaderboard, get_gamification_stats
 
 urlpatterns = [
     # Health Check
@@ -69,4 +70,9 @@ urlpatterns = [
     path('analytics/', get_community_analytics, name='get_community_analytics'),
     path('engagement/', get_engagement_report, name='get_engagement_report'),
     path('insights/', get_insights_dashboard, name='get_insights_dashboard'),
+    
+    # Gamification & Rewards
+    path('users/<int:user_id>/rewards/', get_user_rewards, name='get_user_rewards'),
+    path('leaderboard/', get_leaderboard, name='get_leaderboard'),
+    path('users/<int:user_id>/gamification/', get_gamification_stats, name='get_gamification_stats'),
 ]

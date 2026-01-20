@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 
 from .resource_library import ResourceLibrary, SharedResource
 from .analytics import CommunityAnalytics, EngagementMetrics
+from .gamification import GamificationRule, UserReward
 
 class Forum(models.Model):
     CATEGORY_CHOICES = [
