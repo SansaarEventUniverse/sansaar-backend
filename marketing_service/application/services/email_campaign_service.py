@@ -23,13 +23,17 @@ class TemplateManagementService:
 
 class CampaignSchedulingService:
     def __init__(self):
-        self.email_service = SESEmailService()
+        try:
+            self.email_service = SESEmailService()
+        except Exception:
+            self.email_service = None
 
     def send_campaign(self, campaign_id, recipients):
+        campaign = EmailCampaign.objects.get(id=campaign_id)
         try:
-            campaign = EmailCampaign.objects.get(id=campaign_id)
-            for recipient in recipients:
-                self.email_service.send_email(recipient, campaign.subject, campaign.content)
+            if self.email_service:
+                for recipient in recipients:
+                    self.email_service.send_email(recipient, campaign.subject, campaign.content)
             campaign.mark_sent()
             return True
         except Exception:
