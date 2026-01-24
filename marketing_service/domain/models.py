@@ -49,3 +49,52 @@ class EmailCampaign(models.Model):
 
     def __str__(self):
         return self.name
+
+class SMSTemplate(models.Model):
+    name = models.CharField(max_length=200)
+    message = models.TextField(max_length=160)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def render(self, context):
+        message = self.message
+        for key, value in context.items():
+            message = message.replace(f'{{{{{key}}}}}', str(value))
+        return message
+
+    def __str__(self):
+        return self.name
+
+class SMSCampaign(models.Model):
+    STATUS_CHOICES = [
+        ('draft', 'Draft'),
+        ('scheduled', 'Scheduled'),
+        ('sent', 'Sent'),
+        ('failed', 'Failed'),
+    ]
+
+    name = models.CharField(max_length=200)
+    message = models.TextField(max_length=160)
+    template = models.ForeignKey(SMSTemplate, on_delete=models.SET_NULL, null=True, blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
+    scheduled_at = models.DateTimeField(null=True, blank=True)
+    sent_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def schedule(self):
+        self.status = 'scheduled'
+        self.save()
+
+    def mark_sent(self):
+        from django.utils import timezone
+        self.status = 'sent'
+        self.sent_at = timezone.now()
+        self.save()
+
+    def mark_failed(self):
+        self.status = 'failed'
+        self.save()
+
+    def __str__(self):
+        return self.name
