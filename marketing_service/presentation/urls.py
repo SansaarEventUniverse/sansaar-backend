@@ -2,6 +2,7 @@ from django.urls import path
 from presentation.views.health_views import health_check
 from presentation.views.email_campaign_views import campaigns, send_campaign
 from presentation.views.sms_campaign_views import sms_campaign_list_create, send_sms_campaign
+from presentation.views.automation_views import workflow_list_create, execute_workflow
 
 urlpatterns = [
     # Health Check
@@ -14,4 +15,8 @@ urlpatterns = [
     # SMS Campaigns
     path('sms-campaigns/', sms_campaign_list_create, name='sms-campaign-list-create'),
     path('sms-campaigns/<int:campaign_id>/send/', send_sms_campaign, name='send-sms-campaign'),
+    
+    # Automation Workflows
+    path('automation/workflows/', workflow_list_create, name='workflow-list-create'),
+    path('automation/workflows/<int:workflow_id>/execute/', execute_workflow, name='execute-workflow'),
 ]
