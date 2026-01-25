@@ -98,3 +98,44 @@ class SMSCampaign(models.Model):
 
     def __str__(self):
         return self.name
+
+class AutomationWorkflow(models.Model):
+    STATUS_CHOICES = [
+        ('draft', 'Draft'),
+        ('active', 'Active'),
+        ('paused', 'Paused'),
+        ('completed', 'Completed'),
+    ]
+
+    name = models.CharField(max_length=200)
+    trigger_type = models.CharField(max_length=100)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def activate(self):
+        self.status = 'active'
+        self.save()
+
+    def pause(self):
+        self.status = 'paused'
+        self.save()
+
+    def complete(self):
+        self.status = 'completed'
+        self.save()
+
+    def __str__(self):
+        return self.name
+
+class WorkflowTrigger(models.Model):
+    workflow = models.ForeignKey(AutomationWorkflow, on_delete=models.CASCADE, related_name='triggers')
+    trigger_type = models.CharField(max_length=100)
+    conditions = models.JSONField(default=dict)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def is_valid(self):
+        return True
+
+    def __str__(self):
+        return f"{self.workflow.name} - {self.trigger_type}"
