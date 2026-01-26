@@ -3,6 +3,7 @@ from presentation.views.health_views import health_check
 from presentation.views.email_campaign_views import campaigns, send_campaign
 from presentation.views.sms_campaign_views import sms_campaign_list_create, send_sms_campaign
 from presentation.views.automation_views import workflow_list_create, execute_workflow
+from presentation.views.segmentation_views import segment_list_create, analyze_audience
 
 urlpatterns = [
     # Health Check
@@ -19,4 +20,8 @@ urlpatterns = [
     # Automation Workflows
     path('automation/workflows/', workflow_list_create, name='workflow-list-create'),
     path('automation/workflows/<int:workflow_id>/execute/', execute_workflow, name='execute-workflow'),
+    
+    # Audience Segmentation
+    path('audience/segments/', segment_list_create, name='segment-list-create'),
+    path('audience/analyze/', analyze_audience, name='analyze-audience'),
 ]
