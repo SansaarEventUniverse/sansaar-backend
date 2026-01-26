@@ -139,3 +139,40 @@ class WorkflowTrigger(models.Model):
 
     def __str__(self):
         return f"{self.workflow.name} - {self.trigger_type}"
+
+class AudienceSegment(models.Model):
+    STATUS_CHOICES = [
+        ('draft', 'Draft'),
+        ('active', 'Active'),
+        ('archived', 'Archived'),
+    ]
+
+    name = models.CharField(max_length=200)
+    description = models.TextField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def activate(self):
+        self.status = 'active'
+        self.save()
+
+    def archive(self):
+        self.status = 'archived'
+        self.save()
+
+    def __str__(self):
+        return self.name
+
+class SegmentRule(models.Model):
+    segment = models.ForeignKey(AudienceSegment, on_delete=models.CASCADE, related_name='rules')
+    field = models.CharField(max_length=100)
+    operator = models.CharField(max_length=50)
+    value = models.CharField(max_length=200)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def is_valid(self):
+        return True
+
+    def __str__(self):
+        return f"{self.segment.name} - {self.field} {self.operator} {self.value}"
