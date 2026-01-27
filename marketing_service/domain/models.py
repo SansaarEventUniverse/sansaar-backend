@@ -176,3 +176,45 @@ class SegmentRule(models.Model):
 
     def __str__(self):
         return f"{self.segment.name} - {self.field} {self.operator} {self.value}"
+
+class ABTest(models.Model):
+    STATUS_CHOICES = [
+        ('draft', 'Draft'),
+        ('running', 'Running'),
+        ('completed', 'Completed'),
+        ('paused', 'Paused'),
+    ]
+
+    name = models.CharField(max_length=200)
+    description = models.TextField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def start(self):
+        self.status = 'running'
+        self.save()
+
+    def complete(self):
+        self.status = 'completed'
+        self.save()
+
+    def pause(self):
+        self.status = 'paused'
+        self.save()
+
+    def __str__(self):
+        return self.name
+
+class TestVariant(models.Model):
+    ab_test = models.ForeignKey(ABTest, on_delete=models.CASCADE, related_name='variants')
+    name = models.CharField(max_length=200)
+    description = models.TextField()
+    traffic_percentage = models.IntegerField(default=50)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def is_valid(self):
+        return True
+
+    def __str__(self):
+        return f"{self.ab_test.name} - {self.name}"
