@@ -5,6 +5,7 @@ from presentation.views.sms_campaign_views import sms_campaign_list_create, send
 from presentation.views.automation_views import workflow_list_create, execute_workflow
 from presentation.views.segmentation_views import segment_list_create, analyze_audience
 from presentation.views.ab_testing_views import ab_test_list_create, run_ab_test
+from presentation.views.social_media_views import social_media_post, schedule_post
 
 urlpatterns = [
     # Health Check
@@ -29,4 +30,8 @@ urlpatterns = [
     # A/B Testing
     path('ab-tests/', ab_test_list_create, name='ab-test-list-create'),
     path('ab-tests/<int:test_id>/run/', run_ab_test, name='run-ab-test'),
+    
+    # Social Media
+    path('social-media/post/', social_media_post, name='social-media-post'),
+    path('social-media/schedule/', schedule_post, name='schedule-post'),
 ]

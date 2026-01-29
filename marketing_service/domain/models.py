@@ -218,3 +218,44 @@ class TestVariant(models.Model):
 
     def __str__(self):
         return f"{self.ab_test.name} - {self.name}"
+
+class SocialPlatform(models.Model):
+    name = models.CharField(max_length=100)
+    platform_type = models.CharField(max_length=50)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def is_valid(self):
+        return True
+
+    def __str__(self):
+        return self.name
+
+class SocialMediaPost(models.Model):
+    STATUS_CHOICES = [
+        ('draft', 'Draft'),
+        ('scheduled', 'Scheduled'),
+        ('published', 'Published'),
+        ('failed', 'Failed'),
+    ]
+
+    content = models.TextField()
+    platform = models.CharField(max_length=50)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
+    scheduled_at = models.DateTimeField(null=True, blank=True)
+    published_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def publish(self):
+        from django.utils import timezone
+        self.status = 'published'
+        self.published_at = timezone.now()
+        self.save()
+
+    def mark_failed(self):
+        self.status = 'failed'
+        self.save()
+
+    def __str__(self):
+        return f"{self.platform} - {self.content[:50]}"
