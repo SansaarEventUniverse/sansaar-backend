@@ -6,6 +6,7 @@ from presentation.views.automation_views import workflow_list_create, execute_wo
 from presentation.views.segmentation_views import segment_list_create, analyze_audience
 from presentation.views.ab_testing_views import ab_test_list_create, run_ab_test
 from presentation.views.social_media_views import social_media_post, schedule_post
+from presentation.views.personalization_views import personalize_content, update_preferences, get_personalization
 
 urlpatterns = [
     # Health Check
@@ -34,4 +35,9 @@ urlpatterns = [
     # Social Media
     path('social-media/post/', social_media_post, name='social-media-post'),
     path('social-media/schedule/', schedule_post, name='schedule-post'),
+    
+    # Personalization
+    path('personalization/content/', personalize_content, name='personalize-content'),
+    path('users/<int:user_id>/preferences/', update_preferences, name='update-preferences'),
+    path('personalization/', get_personalization, name='get-personalization'),
 ]
