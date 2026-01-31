@@ -259,3 +259,35 @@ class SocialMediaPost(models.Model):
 
     def __str__(self):
         return f"{self.platform} - {self.content[:50]}"
+
+class PersonalizationRule(models.Model):
+    name = models.CharField(max_length=200)
+    rule_type = models.CharField(max_length=50)
+    conditions = models.JSONField(default=dict)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def activate(self):
+        self.is_active = True
+        self.save()
+
+    def deactivate(self):
+        self.is_active = False
+        self.save()
+
+    def __str__(self):
+        return self.name
+
+class UserPreference(models.Model):
+    user_id = models.IntegerField()
+    preference_type = models.CharField(max_length=100)
+    preference_data = models.JSONField(default=dict)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def is_valid(self):
+        return True
+
+    def __str__(self):
+        return f"User {self.user_id} - {self.preference_type}"
