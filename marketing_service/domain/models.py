@@ -291,3 +291,38 @@ class UserPreference(models.Model):
 
     def __str__(self):
         return f"User {self.user_id} - {self.preference_type}"
+
+class CampaignAnalytics(models.Model):
+    campaign_id = models.IntegerField()
+    campaign_type = models.CharField(max_length=50)
+    total_sent = models.IntegerField(default=0)
+    total_delivered = models.IntegerField(default=0)
+    total_opened = models.IntegerField(default=0)
+    total_clicked = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def calculate_open_rate(self):
+        if self.total_delivered == 0:
+            return 0.0
+        return (self.total_opened / self.total_delivered) * 100
+
+    def calculate_click_rate(self):
+        if self.total_delivered == 0:
+            return 0.0
+        return (self.total_clicked / self.total_delivered) * 100
+
+    def __str__(self):
+        return f"Analytics for Campaign {self.campaign_id}"
+
+class PerformanceMetric(models.Model):
+    campaign_id = models.IntegerField()
+    metric_name = models.CharField(max_length=100)
+    metric_value = models.FloatField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def is_valid(self):
+        return True
+
+    def __str__(self):
+        return f"{self.metric_name}: {self.metric_value}"
