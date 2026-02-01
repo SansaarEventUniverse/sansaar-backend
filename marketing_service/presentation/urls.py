@@ -7,6 +7,7 @@ from presentation.views.segmentation_views import segment_list_create, analyze_a
 from presentation.views.ab_testing_views import ab_test_list_create, run_ab_test
 from presentation.views.social_media_views import social_media_post, schedule_post
 from presentation.views.personalization_views import personalize_content, update_preferences, get_personalization
+from presentation.views.analytics_views import get_campaign_analytics, generate_report
 
 urlpatterns = [
     # Health Check
@@ -40,4 +41,8 @@ urlpatterns = [
     path('personalization/content/', personalize_content, name='personalize-content'),
     path('users/<int:user_id>/preferences/', update_preferences, name='update-preferences'),
     path('personalization/', get_personalization, name='get-personalization'),
+    
+    # Campaign Analytics
+    path('campaigns/<int:campaign_id>/analytics/', get_campaign_analytics, name='get-campaign-analytics'),
+    path('campaigns/<int:campaign_id>/report/', generate_report, name='generate-report'),
 ]
