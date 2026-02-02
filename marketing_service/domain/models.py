@@ -326,3 +326,28 @@ class PerformanceMetric(models.Model):
 
     def __str__(self):
         return f"{self.metric_name}: {self.metric_value}"
+
+class MarketingIntelligence(models.Model):
+    campaign_id = models.IntegerField()
+    intelligence_type = models.CharField(max_length=100)
+    data = models.JSONField(default=dict)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def generate_insights(self):
+        return {"insights": "generated"}
+
+    def __str__(self):
+        return f"Intelligence for Campaign {self.campaign_id}"
+
+class IntelligenceInsight(models.Model):
+    campaign_id = models.IntegerField()
+    insight_type = models.CharField(max_length=100)
+    insight_data = models.JSONField(default=dict)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def is_valid(self):
+        return True
+
+    def __str__(self):
+        return f"{self.insight_type} for Campaign {self.campaign_id}"
