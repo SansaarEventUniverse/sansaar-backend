@@ -8,6 +8,7 @@ from presentation.views.ab_testing_views import ab_test_list_create, run_ab_test
 from presentation.views.social_media_views import social_media_post, schedule_post
 from presentation.views.personalization_views import personalize_content, update_preferences, get_personalization
 from presentation.views.analytics_views import get_campaign_analytics, generate_report
+from presentation.views.intelligence_views import get_intelligence, generate_insights, predictive_analytics
 
 urlpatterns = [
     # Health Check
@@ -45,4 +46,9 @@ urlpatterns = [
     # Campaign Analytics
     path('campaigns/<int:campaign_id>/analytics/', get_campaign_analytics, name='get-campaign-analytics'),
     path('campaigns/<int:campaign_id>/report/', generate_report, name='generate-report'),
+    
+    # Intelligence
+    path('intelligence/', get_intelligence, name='get-intelligence'),
+    path('insights/', generate_insights, name='generate-insights'),
+    path('predictions/<int:campaign_id>/', predictive_analytics, name='predictive-analytics'),
 ]
