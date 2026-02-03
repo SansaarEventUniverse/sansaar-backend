@@ -351,3 +351,51 @@ class IntelligenceInsight(models.Model):
 
     def __str__(self):
         return f"{self.insight_type} for Campaign {self.campaign_id}"
+
+class CampaignOptimization(models.Model):
+    campaign_id = models.IntegerField()
+    optimization_type = models.CharField(max_length=100)
+    current_metrics = models.JSONField(default=dict)
+    target_metrics = models.JSONField(default=dict)
+    status = models.CharField(max_length=50, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def apply_optimization(self):
+        return {'status': 'applied', 'recommendations': ['Increase budget by 20%', 'Adjust targeting']}
+
+    def calculate_improvement(self):
+        if not self.current_metrics or not self.target_metrics:
+            return 0.0
+        key = list(self.current_metrics.keys())[0]
+        current = self.current_metrics.get(key, 0)
+        target = self.target_metrics.get(key, 0)
+        if current == 0:
+            return 0.0
+        return round(((target - current) / current) * 100, 2)
+
+    def __str__(self):
+        return f"Optimization {self.optimization_type} for Campaign {self.campaign_id}"
+
+class OptimizationRule(models.Model):
+    name = models.CharField(max_length=200)
+    rule_type = models.CharField(max_length=100)
+    conditions = models.JSONField(default=dict)
+    actions = models.JSONField(default=dict)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def evaluate(self, metrics):
+        for key, value in self.conditions.items():
+            metric_key = key.replace('min_', '')
+            if metrics.get(metric_key, 0) < value:
+                return False
+        return True
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        if not self.name:
+            raise ValidationError('Name is required')
+
+    def __str__(self):
+        return self.name
