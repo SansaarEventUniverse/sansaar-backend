@@ -9,6 +9,7 @@ from presentation.views.social_media_views import social_media_post, schedule_po
 from presentation.views.personalization_views import personalize_content, update_preferences, get_personalization
 from presentation.views.analytics_views import get_campaign_analytics, generate_report
 from presentation.views.intelligence_views import get_intelligence, generate_insights, predictive_analytics
+from presentation.views.optimization_views import optimize_campaign, get_optimization, auto_optimize
 
 urlpatterns = [
     # Health Check
@@ -51,4 +52,9 @@ urlpatterns = [
     path('intelligence/', get_intelligence, name='get-intelligence'),
     path('insights/', generate_insights, name='generate-insights'),
     path('predictions/<int:campaign_id>/', predictive_analytics, name='predictive-analytics'),
+    
+    # Optimization
+    path('campaigns/<int:campaign_id>/optimize/', optimize_campaign, name='optimize-campaign'),
+    path('campaigns/<int:campaign_id>/optimization/', get_optimization, name='get-optimization'),
+    path('campaigns/<int:campaign_id>/auto-optimize/', auto_optimize, name='auto-optimize'),
 ]
