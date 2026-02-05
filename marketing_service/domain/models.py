@@ -441,3 +441,38 @@ class TouchPoint(models.Model):
 
     def __str__(self):
         return f"{self.channel} touchpoint for User {self.user_id}"
+
+class CustomerJourney(models.Model):
+    user_id = models.IntegerField()
+    campaign_id = models.IntegerField()
+    journey_data = models.JSONField(default=dict)
+    status = models.CharField(max_length=50, default='active')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def get_stages(self):
+        return self.journey_data.get('stages', [])
+
+    def calculate_duration(self):
+        return self.journey_data.get('duration_days', 0)
+
+    def __str__(self):
+        return f"Journey for User {self.user_id} - Campaign {self.campaign_id}"
+
+class JourneyStage(models.Model):
+    journey_id = models.IntegerField()
+    stage_name = models.CharField(max_length=100)
+    stage_order = models.IntegerField()
+    stage_data = models.JSONField(default=dict)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def get_duration(self):
+        return self.stage_data.get('duration_hours', 0)
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        if not self.stage_name:
+            raise ValidationError('Stage name is required')
+
+    def __str__(self):
+        return f"{self.stage_name} (Order: {self.stage_order})"
