@@ -10,6 +10,7 @@ from presentation.views.personalization_views import personalize_content, update
 from presentation.views.analytics_views import get_campaign_analytics, generate_report
 from presentation.views.intelligence_views import get_intelligence, generate_insights, predictive_analytics
 from presentation.views.optimization_views import optimize_campaign, get_optimization, auto_optimize
+from presentation.views.attribution_views import get_attribution, track_touchpoint, attribution_analysis
 
 urlpatterns = [
     # Health Check
@@ -57,4 +58,9 @@ urlpatterns = [
     path('campaigns/<int:campaign_id>/optimize/', optimize_campaign, name='optimize-campaign'),
     path('campaigns/<int:campaign_id>/optimization/', get_optimization, name='get-optimization'),
     path('campaigns/<int:campaign_id>/auto-optimize/', auto_optimize, name='auto-optimize'),
+    
+    # Attribution
+    path('attribution/<int:attribution_id>/', get_attribution, name='get-attribution'),
+    path('attribution/touchpoint/', track_touchpoint, name='track-touchpoint'),
+    path('attribution/analysis/', attribution_analysis, name='attribution-analysis'),
 ]

@@ -399,3 +399,45 @@ class OptimizationRule(models.Model):
 
     def __str__(self):
         return self.name
+
+class AttributionModel(models.Model):
+    campaign_id = models.IntegerField()
+    model_type = models.CharField(max_length=100)
+    conversion_value = models.FloatField()
+    attribution_data = models.JSONField(default=dict)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def calculate_attribution(self):
+        touchpoints = self.attribution_data.get('touchpoints', 1)
+        if touchpoints == 0:
+            return {'per_touchpoint': 0.0}
+        return {'per_touchpoint': round(self.conversion_value / touchpoints, 2)}
+
+    def get_attribution_weights(self):
+        channels = self.attribution_data.get('channels', [])
+        if not channels:
+            return {}
+        weight = 1.0 / len(channels)
+        return {channel: round(weight, 2) for channel in channels}
+
+    def __str__(self):
+        return f"{self.model_type} Attribution for Campaign {self.campaign_id}"
+
+class TouchPoint(models.Model):
+    campaign_id = models.IntegerField()
+    channel = models.CharField(max_length=100)
+    user_id = models.IntegerField()
+    touchpoint_data = models.JSONField(default=dict)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def get_value(self):
+        return self.touchpoint_data.get('value', 0.0)
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        if not self.channel:
+            raise ValidationError('Channel is required')
+
+    def __str__(self):
+        return f"{self.channel} touchpoint for User {self.user_id}"
