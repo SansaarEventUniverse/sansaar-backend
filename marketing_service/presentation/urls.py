@@ -11,6 +11,7 @@ from presentation.views.analytics_views import get_campaign_analytics, generate_
 from presentation.views.intelligence_views import get_intelligence, generate_insights, predictive_analytics
 from presentation.views.optimization_views import optimize_campaign, get_optimization, auto_optimize
 from presentation.views.attribution_views import get_attribution, track_touchpoint, attribution_analysis
+from presentation.views.journey_views import get_customer_journey, map_journey, journey_analysis
 
 urlpatterns = [
     # Health Check
@@ -63,4 +64,9 @@ urlpatterns = [
     path('attribution/<int:attribution_id>/', get_attribution, name='get-attribution'),
     path('attribution/touchpoint/', track_touchpoint, name='track-touchpoint'),
     path('attribution/analysis/', attribution_analysis, name='attribution-analysis'),
+    
+    # Customer Journey
+    path('customer-journey/<int:journey_id>/', get_customer_journey, name='get-customer-journey'),
+    path('customer-journey/map/', map_journey, name='map-journey'),
+    path('customer-journey/analysis/', journey_analysis, name='journey-analysis'),
 ]
