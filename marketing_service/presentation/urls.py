@@ -12,6 +12,7 @@ from presentation.views.intelligence_views import get_intelligence, generate_ins
 from presentation.views.optimization_views import optimize_campaign, get_optimization, auto_optimize
 from presentation.views.attribution_views import get_attribution, track_touchpoint, attribution_analysis
 from presentation.views.journey_views import get_customer_journey, map_journey, journey_analysis
+from presentation.views.roi_views import get_roi_analytics, calculate_roi, roi_report
 
 urlpatterns = [
     # Health Check
@@ -69,4 +70,9 @@ urlpatterns = [
     path('customer-journey/<int:journey_id>/', get_customer_journey, name='get-customer-journey'),
     path('customer-journey/map/', map_journey, name='map-journey'),
     path('customer-journey/analysis/', journey_analysis, name='journey-analysis'),
+    
+    # ROI Analytics
+    path('roi/', get_roi_analytics, name='get-roi-analytics'),
+    path('roi/calculate/', calculate_roi, name='calculate-roi'),
+    path('roi/report/', roi_report, name='roi-report'),
 ]

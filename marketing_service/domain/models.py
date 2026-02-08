@@ -476,3 +476,42 @@ class JourneyStage(models.Model):
 
     def __str__(self):
         return f"{self.stage_name} (Order: {self.stage_order})"
+
+class ROIAnalytics(models.Model):
+    campaign_id = models.IntegerField()
+    revenue = models.FloatField()
+    cost = models.FloatField()
+    roi_data = models.JSONField(default=dict)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def calculate_roi(self):
+        if self.cost == 0:
+            return 0.0
+        return round(((self.revenue - self.cost) / self.cost) * 100, 2)
+
+    def get_profit(self):
+        return self.revenue - self.cost
+
+    def __str__(self):
+        return f"ROI Analytics for Campaign {self.campaign_id}"
+
+class ROIMetric(models.Model):
+    analytics_id = models.IntegerField()
+    metric_name = models.CharField(max_length=100)
+    metric_value = models.FloatField()
+    metric_data = models.JSONField(default=dict)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def is_target_met(self):
+        target = self.metric_data.get('target', 0)
+        return self.metric_value >= target
+
+    def get_variance(self):
+        target = self.metric_data.get('target', 0)
+        if target == 0:
+            return 0.0
+        return round(((self.metric_value - target) / target) * 100, 2)
+
+    def __str__(self):
+        return f"{self.metric_name}: {self.metric_value}"
