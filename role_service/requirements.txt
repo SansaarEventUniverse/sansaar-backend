@@ -10,6 +10,7 @@ click-repl==0.3.0
 coverage==7.13.2
 django==6.0.1
 djangorestframework==3.16.1
+gunicorn==25.1.0
 iniconfig==2.3.0
 kombu==5.6.2
 packaging==26.0

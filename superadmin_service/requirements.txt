@@ -10,6 +10,7 @@ django-stubs-ext==5.2.9
 djangorestframework==3.16.1
 elastic-transport==9.2.1
 elasticsearch==9.2.1
+gunicorn==25.1.0
 idna==3.11
 iniconfig==2.3.0
 isort==7.0.0
